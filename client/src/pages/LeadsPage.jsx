@@ -169,15 +169,9 @@ const LeadsPage = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#ebf8ff] to-[#e0e7ff] p-3 sm:p-6"
+      className="space-y-8 p-4 md:p-6"
     >
-      {/* Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-blue-600/20 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto mt-5">
+      <div className="relative z-10">
         {/* Header */}
         <motion.div
           variants={itemVariants}
@@ -185,19 +179,11 @@ const LeadsPage = () => {
         >
           <div className="space-y-2">
             <motion.h1
-              className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-[#1B3890] to-[#0F79C5] bg-clip-text text-transparent pb-1"
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "linear"
-              }}
+              className="text-heading-lg font-bold bg-gradient-primary bg-clip-text text-transparent"
             >
               Leads Management
             </motion.h1>
-            <p className="text-gray-600 font-medium text-sm sm:text-base">Manage your agents and candidate leads</p>
+            <p className="text-muted-dark text-sm sm:text-base">Manage your agents and candidate leads</p>
             <div className="flex items-center justify-center md:justify-start gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -214,11 +200,10 @@ const LeadsPage = () => {
             whileHover={{ scale: 1.02 }}
           >
             <motion.button
-              className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
-              style={{ background: 'linear-gradient(135deg, #1B3890, #0F79C5)' }}
+              className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base"
               whileHover={{
                 scale: 1.05,
-                boxShadow: '0 20px 40px rgba(15, 121, 197, 0.3)'
+                boxShadow: '0 20px 40px rgba(15, 121, 197, 0.1)'
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -251,7 +236,7 @@ const LeadsPage = () => {
               <input
                 type="text"
                 placeholder="Search by name or email..."
-                className="pl-10 sm:pl-12 w-full p-3 sm:p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0F79C5] focus:border-transparent bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-md text-sm sm:text-base"
+                className="pl-10 sm:pl-12 w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-transparent bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-md text-sm sm:text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -292,7 +277,7 @@ const LeadsPage = () => {
                   >
                     <ChevronDown
                       size={16}
-                      className={`sm:w-[18px] sm:h-[18px] ${filter.value !== 'All' ? 'text-[#0F79C5]' : 'text-gray-500'}`}
+                      className={`sm:w-[18px] sm:h-[18px] ${filter.value !== 'All' ? 'text-[var(--color-secondary)]' : 'text-gray-500'}`}
                     />
                   </motion.div>
                 </motion.div>
@@ -308,7 +293,7 @@ const LeadsPage = () => {
         >
           <div className="p-4 sm:p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+              <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[#0F79C5]" />
                 Lead Overview
               </h3>
@@ -360,7 +345,7 @@ const LeadsPage = () => {
                         onMouseEnter={() => setHoveredRow(lead.id)}
                         onMouseLeave={() => setHoveredRow(null)}
                       >
-                        <td className="px-4 py-4">
+                        <td className="px-5 py-4">
                           <div className="flex items-center space-x-3">
                             <motion.div
                               className={`p-2 rounded-xl ${lead.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'}`}
@@ -374,14 +359,14 @@ const LeadsPage = () => {
                               )}
                             </motion.div>
                             <div className="space-y-2">
-                              <div className="text-sm font-semibold text-gray-900 group-hover:text-[#1B3890] transition-colors">
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors">
                                 {lead.name}
                               </div>
-                              <div className="flex items-center space-x-2 text-xs text-gray-500">
+                              <div className="flex items-center space-x-2 text-xs text-muted-dark">
                                 <Mail size={12} />
                                 <span>{lead.contact}</span>
                               </div>
-                              <div className="flex items-center space-x-2 text-xs text-gray-500">
+                              <div className="flex items-center space-x-2 text-xs text-muted-dark">
                                 <Phone size={12} />
                                 <span>{lead.phone}</span>
                               </div>
@@ -617,7 +602,7 @@ const LeadsPage = () => {
                 disabled={currentPage === 1}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === 1
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-[#1B3890] to-[#0F79C5] text-white hover:shadow-lg'
+                    : 'bg-gradient-primary text-white hover:shadow-lg'
                   }`}
                 whileHover={currentPage !== 1 ? { scale: 1.05 } : {}}
                 whileTap={currentPage !== 1 ? { scale: 0.95 } : {}}
@@ -631,7 +616,7 @@ const LeadsPage = () => {
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === page
-                        ? 'bg-gradient-to-r from-[#1B3890] to-[#0F79C5] text-white shadow-lg'
+                        ? 'bg-gradient-primary text-white shadow-lg'
                         : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-md'
                       }`}
                     whileHover={{ scale: 1.1 }}
@@ -647,7 +632,7 @@ const LeadsPage = () => {
                 disabled={currentPage === totalPages}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === totalPages
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-[#1B3890] to-[#0F79C5] text-white hover:shadow-lg'
+                    : 'bg-gradient-primary text-white hover:shadow-lg'
                   }`}
                 whileHover={currentPage !== totalPages ? { scale: 1.05 } : {}}
                 whileTap={currentPage !== totalPages ? { scale: 0.95 } : {}}

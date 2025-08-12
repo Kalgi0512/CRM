@@ -15,7 +15,7 @@ import {
   BarChart3,
   Shield,
   UserCog,
-  Settings,
+  Settings, // Added Settings icon
   LayoutDashboard
 } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -28,7 +28,7 @@ const navItems = [
   { to: "reports", label: "Reports", icon: BarChart3 },
   { to: "admin", label: "Admin", icon: Shield },
   { to: "users", label: "Users", icon: UserCog },
-  { to: "settings", label: "Settings", icon: Settings },
+  { to: "settings", label: "Settings", icon: Settings }, // Settings is already in the navItems array
 ];
 
 const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }) => {

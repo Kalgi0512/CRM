@@ -8,6 +8,7 @@ import DashboardDefault from "./pages/DashboardDefault";
 import LeadsDetailsPage from "./pages/LeadsDetailsPage";
 import TasksPage from "./pages/TasksPage";
 import ReportsPage from "./pages/ReportsPage";
+import SettingsPage from "./pages/SettingsPage"; // Added SettingsPage import
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="clients" element={<ClientsPage />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="reports" element={<ReportsPage />} />
+          <Route path="settings" element={<SettingsPage />} /> {/* Added SettingsPage route */}
         </Route>
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>

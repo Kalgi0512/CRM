@@ -21,17 +21,22 @@ import {
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const navItems = [
-  { to: "", label: "Dashboard", icon: LayoutDashboard },
+  { to: ".", label: "Dashboard", icon: LayoutDashboard },
   { to: "leads", label: "Leads", icon: ClipboardList },
   { to: "clients", label: "Clients", icon: Users },
   { to: "tasks", label: "Tasks", icon: CheckSquare },
   { to: "reports", label: "Reports", icon: BarChart3 },
-  { to: "admin", label: "Admin", icon: Shield },
-  { to: "users", label: "Users", icon: UserCog },
-  { to: "settings", label: "Settings", icon: Settings }, // Settings is already in the navItems array
+  {
+    label: "Admin",
+    icon: Shield,
+    children: [
+      { to: "admin/users", label: "Users", icon: UserCog },
+      { to: "admin/settings", label: "Settings", icon: Settings }
+    ]
+  }
 ];
 
-const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }) => {
+const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false, isOpen, toggleOpen }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -42,84 +47,99 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Link
-        to={to}
-        onClick={onClick}
-        className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-full text-left ${isActive
+      {to ? (
+        <Link
+          to={to}
+          onClick={onClick}
+          className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-full text-left ${isActive
             ? "text-white"
             : "text-muted-dark hover:text-gray-900"
-          }`}
-      >
-        {/* Active state background (full color) */}
-        {isActive && (
-          <motion.div
-            className="absolute inset-0 rounded-xl"
-            style={{
-              background: "linear-gradient(90deg, #1B3890, #0F79C5)"
-            }}
-            transition={{ duration: 0.3 }}
-          />
-        )}
+            }`}
+        >
+          {/* Active state background (full color) */}
+          {isActive && (
+            <motion.div
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background: "linear-gradient(90deg, #1B3890, #0F79C5)"
+              }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
 
-        {/* Hover state background (subtle) */}
-        {isHovered && !isActive && (
-          <motion.div
-            className="absolute inset-0 rounded-xl bg-gray-100"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-        )}
+          {/* Hover state background (subtle) */}
+          {isHovered && !isActive && (
+            <motion.div
+              className="absolute inset-0 rounded-xl bg-gray-100"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+          )}
 
-        {/* Hover border animation */}
-        {isHovered && !isActive && (
-          <motion.div
-            className="absolute inset-0 rounded-xl border-2 pointer-events-none"
-            style={{
-              borderColor: "rgba(27, 56, 144, 0.3)"
-            }}
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          />
-        )}
+          {/* Hover border animation */}
+          {isHovered && !isActive && (
+            <motion.div
+              className="absolute inset-0 rounded-xl border-2 pointer-events-none"
+              style={{
+                borderColor: "rgba(27, 56, 144, 0.3)"
+              }}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
 
-        <div className="relative z-10 flex items-center gap-3 w-full">
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 400 }}
-          >
-            <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-white" : "text-gray-600 group-hover:text-[#1B3890]"
-              }`} />
-          </motion.div>
+          <div className="relative z-10 flex items-center gap-3 w-full">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-white" : "text-gray-600 group-hover:text-[#1B3890]"
+                }`} />
+            </motion.div>
 
-          <span className="flex-1 text-description-sm">{label}</span>
+            <span className="flex-1 text-description-sm">{label}</span>
 
-          <motion.div
-            className={`transition-all ${isActive ? "text-white opacity-100"
+            <motion.div
+              className={`transition-all ${isActive ? "text-white opacity-100"
                 : "text-gray-400 opacity-0 group-hover:opacity-100"
-              }`}
-            animate={{
-              x: (isActive || isHovered) ? 0 : -10
-            }}
+                }`}
+              animate={{
+                x: (isActive || isHovered) ? 0 : -10
+              }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </motion.div>
+          </div>
+        </Link>
+      ) : (
+        <button
+          onClick={toggleOpen}
+          className="group flex items-center gap-3 px-4 py-3 rounded-xl font-medium w-full text-left hover:bg-gray-100 cursor-pointer"
+        >
+          <Icon className="w-5 h-5 text-gray-600" />
+          <span className="flex-1 text-muted-dark hover:text-gray-900">{label}</span>
+          <motion.div
+            animate={{ rotate: isOpen ? 90 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 text-gray-500" />
           </motion.div>
-        </div>
-      </Link>
+        </button>
+      )}
     </motion.div>
   );
 };
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const location = useLocation();
-  const currentPath = location.pathname.replace(/^\/dashboard\/?/, '') || '';
-
-
+  const currentPath = location.pathname === "/dashboard" ? "." : location.pathname.replace(/^\/dashboard\//, '');
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);
@@ -206,15 +226,49 @@ const DashboardLayout = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                 >
-                  {navItems.map((item, index) => (
-                    <SidebarItem
-                      key={item.to}
-                      {...item}
-                      onClick={closeSidebar}
-                      index={index}
-                      isActive={currentPath === item.to}
-                    />
-                  ))}
+                  {navItems.map((item, index) =>
+                    item.children ? (
+                      <div key={item.label}>
+                        <SidebarItem
+                          label={item.label}
+                          icon={item.icon}
+                          index={index}
+                          isOpen={adminOpen}
+                          toggleOpen={() => setAdminOpen(prev => !prev)}
+                        />
+                        <AnimatePresence>
+                          {adminOpen && (
+                            <motion.div
+                              className="ml-8 space-y-1"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              {item.children.map((child, childIndex) => (
+                                <SidebarItem
+                                  key={child.to}
+                                  {...child}
+                                  onClick={closeSidebar}
+                                  index={childIndex}
+                                  isActive={currentPath === child.to}
+                                />
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : (
+                      <SidebarItem
+                        key={item.to}
+                        {...item}
+                        onClick={closeSidebar}
+                        index={index}
+                        isActive={currentPath === item.to}
+                      />
+                    )
+                  )}
+
 
                 </motion.nav>
 

@@ -45,11 +45,10 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }
       <Link
         to={to}
         onClick={onClick}
-        className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-full text-left ${
-          isActive 
-            ? "text-white" 
+        className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-full text-left ${isActive
+            ? "text-white"
             : "text-muted-dark hover:text-gray-900"
-        }`}
+          }`}
       >
         {/* Active state background (full color) */}
         {isActive && (
@@ -92,18 +91,16 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }
             whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400 }}
           >
-            <Icon className={`w-5 h-5 transition-colors ${
-              isActive ? "text-white" : "text-gray-600 group-hover:text-[#1B3890]"
-            }`} />
+            <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-white" : "text-gray-600 group-hover:text-[#1B3890]"
+              }`} />
           </motion.div>
-          
+
           <span className="flex-1 text-description-sm">{label}</span>
-          
+
           <motion.div
-            className={`transition-all ${
-              isActive ? "text-white opacity-100" 
-              : "text-gray-400 opacity-0 group-hover:opacity-100"
-            }`}
+            className={`transition-all ${isActive ? "text-white opacity-100"
+                : "text-gray-400 opacity-0 group-hover:opacity-100"
+              }`}
             animate={{
               x: (isActive || isHovered) ? 0 : -10
             }}
@@ -120,31 +117,33 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, index, isActive = false }
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const currentPath = location.pathname.split('/').pop() || 'profile';
+  const currentPath = location.pathname.replace(/^\/dashboard\/?/, '') || '';
+
+
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div 
+    <div
       className="min-h-screen flex flex-col md:flex-row relative bg-gradient-soft"
     >
       {/* Mobile Header */}
-      <motion.header 
-        className="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg"
+      <motion.header
+        className="md:hidden flex items-center justify-end px-6 py-4 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.h1 
+        {/* <motion.h1 
           className="text-description-lg font-bold bg-gradient-primary bg-clip-text text-transparent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           Dashboard
-        </motion.h1>
-        <motion.button 
+        </motion.h1> */}
+        <motion.button
           onClick={toggleSidebar}
           className="p-2 rounded-xl bg-gradient-primary text-white shadow-lg"
           whileHover={{ scale: 1.05 }}
@@ -169,21 +168,21 @@ const DashboardLayout = () => {
         {(sidebarOpen || !window.matchMedia("(max-width: 768px)").matches) && (
           <>
             <motion.aside
-              className={`fixed lg:pt-10 md:relative top-0 left-0 w-72 h-content bg-white/90 backdrop-blur-xl border-r border-white/30 z-50 shadow-2xl md:shadow-lg`}
+              className={`fixed md:relative top-0 left-0 w-72 h-content bg-white/90 backdrop-blur-xl border-r border-white/30 z-50 shadow-2xl md:shadow-lg`}
               initial={{ x: -288, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -288, opacity: 0 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 300, 
+              transition={{
+                type: "spring",
+                stiffness: 300,
                 damping: 30,
-                duration: 0.4 
+                duration: 0.4
               }}
             >
               <div className="p-8 space-y-8 h-screen flex flex-col">
                 {/* Close button for mobile */}
                 <div className="md:hidden flex justify-end">
-                  <button 
+                  <button
                     onClick={closeSidebar}
                     className="p-2 rounded-full text-muted-dark hover:bg-gray-100"
                   >
@@ -197,64 +196,26 @@ const DashboardLayout = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  <h2 className="text-heading-lg bg-gradient-primary bg-clip-text text-transparent">
-                    Dashboard
-                  </h2>
-                  <motion.div 
-                    className="h-1 w-16 rounded-full mt-2"
-                    style={{ background: "linear-gradient(90deg, #1B3890, #0F79C5)" }}
-                    initial={{ width: 0 }}
-                    animate={{ width: 64 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                  />
+                  <img src="/blue-whale-logo.webp" alt="Blue Whale Logo" className="w-auto h-15" />
                 </motion.div>
 
                 {/* Navigation */}
-                <motion.nav 
+                <motion.nav
                   className="flex flex-col space-y-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                 >
                   {navItems.map((item, index) => (
-                    <SidebarItem 
-                      key={item.to} 
-                      {...item} 
-                      onClick={closeSidebar} 
-                      index={index} 
+                    <SidebarItem
+                      key={item.to}
+                      {...item}
+                      onClick={closeSidebar}
+                      index={index}
                       isActive={currentPath === item.to}
                     />
                   ))}
-                  
-                  {/* Back to Jobs */}
-                  <motion.div
-                    className="pt-6 mt-6 border-t border-gray-200"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                  >
-                    <Link
-                      to="/jobs"
-                      className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:text-white font-medium transition-all duration-300 relative overflow-hidden"
-                      onClick={closeSidebar}
-                    >
-                      <motion.div
-                        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100"
-                        style={{ background: "linear-gradient(90deg, #1B3890, #0F79C5)" }}
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                      <div className="relative z-10 flex items-center gap-3">
-                        <motion.div
-                          whileHover={{ scale: 1.1, rotate: -5 }}
-                          transition={{ type: "spring", stiffness: 400 }}
-                        >
-                          <Home className="w-5 h-5" />
-                        </motion.div>
-                        Back to Jobs
-                      </div>
-                    </Link>
-                  </motion.div>
+
                 </motion.nav>
 
                 {/* Logout Button */}
@@ -263,7 +224,7 @@ const DashboardLayout = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.5 }}
                 >
-                  <motion.button 
+                  <motion.button
                     className="group flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:text-white font-medium transition-all duration-300 relative overflow-hidden w-full"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -306,7 +267,7 @@ const DashboardLayout = () => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <motion.main 
+      <motion.main
         className="flex-1 lg:p-12 overflow-y-auto relative"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}

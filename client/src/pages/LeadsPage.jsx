@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, ChevronDown, Edit2, Trash2, MoreVertical, User, Briefcase, Filter, Eye, Phone, Mail } from 'lucide-react';
+import LeadsFilters from "../components/LeadsFilter";
+import { useNavigate } from "react-router-dom";
+import LeadsDetailsPage from "./LeadsDetailsPage";
+import AddLeadModal from "../components/AddLeadModal";
+import EditLeadModal from "../components/EditLeadModal";
 
 const LeadsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,6 +14,43 @@ const LeadsPage = () => {
   const [assignedFilter, setAssignedFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [hoveredRow, setHoveredRow] = useState(null);
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+const [currentLead, setCurrentLead] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleLeadClick = (leadId) => {
+    navigate(`/dashboard/leads/${leadId}`);
+  };
+
+  const handleCloseDetails = () => {
+    setIsDetailsOpen(false);
+  };
+
+  const handleEditLead = (lead) => {
+    //  edit logic 
+    console.log("Editing lead:", lead);
+  };
+
+  const handleDeleteLead = (lead) => {
+    //  delete logic 
+    console.log("Deleting lead:", lead);
+  };
+
+  const handleAddLead = (newLead) => {
+  // api
+  console.log("New lead added:", newLead);
+  // For demo
+  alert(`New lead for ${newLead.name} has been added successfully!`);
+};
+
+const handleSaveLead = (updatedLead) => {
+  // api
+  console.log("Lead updated:", updatedLead);
+  // for demo
+  alert(`Lead ${updatedLead.name} has been updated successfully!`);
+};
 
   const leads = [
     {
@@ -200,14 +242,14 @@ const LeadsPage = () => {
             whileHover={{ scale: 1.02 }}
           >
             <motion.button
-              className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base"
+            onClick={() => setIsAddLeadOpen(true)}
+              className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base cursor-pointer"
               whileHover={{
                 scale: 1.05,
                 boxShadow: '0 20px 40px rgba(15, 121, 197, 0.1)'
               }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Plus size={16} className="sm:w-5 sm:h-5 group-hover:rotate-180 transition-transform duration-300" />
               <span className="hidden sm:inline">Add New Lead</span>
               <span className="sm:hidden">Add Lead</span>
@@ -216,75 +258,16 @@ const LeadsPage = () => {
         </motion.div>
 
         {/* Search and Filters */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white/70 backdrop-blur-xl rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-xl border border-white/20"
-        >
-          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-            {/* Search Bar */}
-            <div className="relative flex-1 max-w-full lg:max-w-md">
-              <motion.div
-                className="absolute inset-y-0 z-1 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none"
-                animate={{
-                  scale: searchQuery ? [1, 1.2, 1] : 1,
-                  color: searchQuery ? '#0F79C5' : '#6B7280'
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <Search size={18} className="sm:w-5 sm:h-5" />
-              </motion.div>
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                className="pl-10 sm:pl-12 w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-transparent bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-md text-sm sm:text-base"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            {/* Filters */}
-            <div className="flex gap-2 sm:gap-4 flex-wrap">
-              {[
-                { label: 'Type', value: typeFilter, setter: setTypeFilter, options: ['All', 'Customer', 'Agent'] },
-                { label: 'Status', value: statusFilter, setter: setStatusFilter, options: ['All', 'Initial Contact', 'Assessment', 'Documentation', 'Visa Processing', 'Offer Received', 'Completed', 'Rejected'] },
-                { label: 'Consultant', value: assignedFilter, setter: setAssignedFilter, options: ['All', 'Sarah Johnson', 'Mike Chen', 'David Wilson', 'Emma Davis'] }
-              ].map((filter, index) => (
-                <motion.div
-                  key={filter.label}
-                  className="relative flex-1 min-w-[120px] sm:min-w-0 sm:flex-none"
-                  whileHover={{ scale: 1.02 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <select
-                    className="appearance-none bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-10 focus:outline-none focus:ring-2 focus:ring-[#0F79C5] focus:border-transparent transition-all duration-300 hover:shadow-md cursor-pointer w-full text-xs sm:text-sm"
-                    value={filter.value}
-                    onChange={(e) => filter.setter(e.target.value)}
-                  >
-                    {filter.options.map(option => (
-                      <option key={option} value={option}>
-                        {option === 'All' ?
-                          (filter.label === 'Status' ? 'All Status' : `All ${filter.label}s`) :
-                          option}
-                      </option>
-                    ))}
-                  </select>
-                  <motion.div
-                    className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3 pointer-events-none"
-                    animate={{ rotate: filter.value !== 'All' ? 360 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown
-                      size={16}
-                      className={`sm:w-[18px] sm:h-[18px] ${filter.value !== 'All' ? 'text-[var(--color-secondary)]' : 'text-gray-500'}`}
-                    />
-                  </motion.div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        <LeadsFilters
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          assignedFilter={assignedFilter}
+          setAssignedFilter={setAssignedFilter}
+        />
 
         {/* Leads Table */}
         <motion.div
@@ -294,7 +277,7 @@ const LeadsPage = () => {
           <div className="p-4 sm:p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
-                <Filter size={18} className="sm:w-5 sm:h-5 text-[#0F79C5]" />
+                <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
                 Lead Overview
               </h3>
               <div className="text-xs sm:text-sm text-gray-500">
@@ -358,7 +341,9 @@ const LeadsPage = () => {
                                 <Briefcase className="h-5 w-5 text-indigo-600" />
                               )}
                             </motion.div>
-                            <div className="space-y-2">
+                            <div
+                              onClick={() => handleLeadClick(lead.id)}
+                              className="space-y-2 cursor-pointer">
                               <div className="text-sm font-semibold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors">
                                 {lead.name}
                               </div>
@@ -376,8 +361,8 @@ const LeadsPage = () => {
                         <td className="px-4 py-4">
                           <motion.span
                             className={`px-3 py-1 text-xs font-semibold rounded-full border ${lead.type === 'Customer'
-                                ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                : 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                              ? 'bg-blue-100 text-blue-800 border-blue-200'
+                              : 'bg-indigo-100 text-indigo-800 border-indigo-200'
                               }`}
                             whileHover={{ scale: 1.05 }}
                           >
@@ -388,12 +373,12 @@ const LeadsPage = () => {
                         <td className="px-4 py-4">
                           <motion.span
                             className={`px-3 py-1 text-xs font-semibold rounded-full border ${lead.status === 'Initial Contact' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                                lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                                  lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                                    lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800 border-green-200' :
-                                      lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800 border-teal-200' :
-                                        lead.status === 'Completed' ? 'bg-gray-100 text-gray-800 border-gray-200' :
-                                          'bg-red-100 text-red-800 border-red-200'
+                              lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                                lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                                  lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800 border-green-200' :
+                                    lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800 border-teal-200' :
+                                      lead.status === 'Completed' ? 'bg-gray-100 text-gray-800 border-gray-200' :
+                                        'bg-red-100 text-red-800 border-red-200'
                               }`}
                             whileHover={{ scale: 1.05 }}
                           >
@@ -415,21 +400,36 @@ const LeadsPage = () => {
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
                             {[
-                              { icon: Eye, color: 'text-blue-600 hover:text-blue-800' },
-                              { icon: Edit2, color: 'text-green-600 hover:text-green-800' },
-                              { icon: Trash2, color: 'text-red-600 hover:text-red-800' },
-                            ].map(({ icon: Icon, color }, idx) => (
-                              <motion.button
-                                key={idx}
-                                className={`p-2 rounded-lg cursor-pointer transition-all duration-100 ${color} hover:bg-white hover:shadow-md`}
-                                whileHover={{ scale: 1.1, rotate: idx === 0 ? 0 : 15 }}
-                                whileTap={{ scale: 0.9 }}
-                                initial={{ opacity: 0.7 }}
-                                animate={{ opacity: hoveredRow === lead.id ? 1 : 0.7 }}
-                              >
-                                <Icon size={16} />
-                              </motion.button>
-                            ))}
+                              {
+                                icon: Eye,
+                                color: 'text-blue-600 hover:text-blue-800',
+                                action: () => handleLeadClick(lead.id)
+                              },
+                              {
+                                icon: Edit2,
+                                color: 'text-green-600 hover:text-green-800',
+                                  action: (lead) => {
+    setCurrentLead(lead);
+    setIsEditModalOpen(true);
+  }
+                              },
+                              {
+                                icon: Trash2,
+                                color: 'text-red-600 hover:text-red-800',
+                                action: () => handleDeleteLead(lead)
+                              }].map(({ icon: Icon, color, action }, idx) => (
+                                <motion.button
+                                  key={idx}
+                                  onClick={action}
+                                  className={`p-2 rounded-lg cursor-pointer transition-all duration-100 ${color} hover:bg-white hover:shadow-md`}
+                                  whileHover={{ scale: 1.1, rotate: idx === 0 ? 0 : 15 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  initial={{ opacity: 0.7 }}
+                                  animate={{ opacity: hoveredRow === lead.id ? 1 : 0.7 }}
+                                >
+                                  <Icon size={16} />
+                                </motion.button>
+                              ))}
                           </div>
                         </td>
                       </motion.tr>
@@ -517,8 +517,8 @@ const LeadsPage = () => {
                         <div className="flex flex-wrap gap-2">
                           <motion.span
                             className={`px-2 py-1 text-xs font-semibold rounded-full border ${lead.type === 'Customer'
-                                ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                : 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                              ? 'bg-blue-100 text-blue-800 border-blue-200'
+                              : 'bg-indigo-100 text-indigo-800 border-indigo-200'
                               }`}
                             whileHover={{ scale: 1.05 }}
                           >
@@ -526,12 +526,12 @@ const LeadsPage = () => {
                           </motion.span>
                           <motion.span
                             className={`px-2 py-1 text-xs font-semibold rounded-full border ${lead.status === 'Initial Contact' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                                lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                                  lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                                    lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800 border-green-200' :
-                                      lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800 border-teal-200' :
-                                        lead.status === 'Completed' ? 'bg-gray-100 text-gray-800 border-gray-200' :
-                                          'bg-red-100 text-red-800 border-red-200'
+                              lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                                lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                                  lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800 border-green-200' :
+                                    lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800 border-teal-200' :
+                                      lead.status === 'Completed' ? 'bg-gray-100 text-gray-800 border-gray-200' :
+                                        'bg-red-100 text-red-800 border-red-200'
                               }`}
                             whileHover={{ scale: 1.05 }}
                           >
@@ -548,12 +548,28 @@ const LeadsPage = () => {
                         </div>
                         <div className="flex items-center space-x-1">
                           {[
-                            { icon: Eye, color: 'text-blue-600' },
-                            { icon: Edit2, color: 'text-green-600' },
-                            { icon: Trash2, color: 'text-red-600' },                            
-                          ].map(({ icon: Icon, color }, idx) => (
+                            {
+                              icon: Eye,
+                              color: 'text-blue-600',
+                              action: () => handleLeadClick(lead.id)
+                            },
+                            {
+                              icon: Edit2,
+                              color: 'text-green-600',
+                                action: (lead) => {
+    setCurrentLead(lead);
+    setIsEditModalOpen(true);
+  }
+                            },
+                            {
+                              icon: Trash2,
+                              color: 'text-red-600',
+                              action: () => handleDeleteLead(lead)
+                            },
+                          ].map(({ icon: Icon, color, action }, idx) => (
                             <motion.button
                               key={idx}
+                              onClick={action}
                               className={`p-2 rounded-lg cursor-pointer transition-all duration-200 ${color} hover:bg-gray-100`}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
@@ -601,8 +617,8 @@ const LeadsPage = () => {
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-primary text-white hover:shadow-lg'
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-primary text-white hover:shadow-lg'
                   }`}
                 whileHover={currentPage !== 1 ? { scale: 1.05 } : {}}
                 whileTap={currentPage !== 1 ? { scale: 0.95 } : {}}
@@ -616,8 +632,8 @@ const LeadsPage = () => {
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === page
-                        ? 'bg-gradient-primary text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-md'
+                      ? 'bg-gradient-primary text-white shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-md'
                       }`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -631,8 +647,8 @@ const LeadsPage = () => {
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 text-xs sm:text-sm ${currentPage === totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-primary text-white hover:shadow-lg'
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-primary text-white hover:shadow-lg'
                   }`}
                 whileHover={currentPage !== totalPages ? { scale: 1.05 } : {}}
                 whileTap={currentPage !== totalPages ? { scale: 0.95 } : {}}
@@ -643,6 +659,18 @@ const LeadsPage = () => {
           </motion.div>
         )}
       </div>
+      <AddLeadModal 
+  isOpen={isAddLeadOpen} 
+  onClose={() => setIsAddLeadOpen(false)}
+  onSave={handleAddLead}
+/>
+
+<EditLeadModal 
+  isOpen={isEditModalOpen} 
+  onClose={() => setIsEditModalOpen(false)}
+  onSave={handleSaveLead}
+  lead={currentLead}
+/>
     </motion.div>
   );
 };

@@ -1,151 +1,122 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, ChevronDown, Edit2, Trash2, MoreVertical, User, Briefcase, Filter, Eye, Phone, Mail, Globe, Home, Calendar, Flag, Check, X, List, ScrollText } from 'lucide-react';
+import { Search, Plus, ChevronDown, Edit2, Trash2, MoreVertical, User, Briefcase, Shield, Mail, Phone, Lock, Check, X, List, Filter, Calendar } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
-import ClientsFilters from "../components/ClientFilters";
-import EditClientModal from "../components/EditClientModal";
-import AddClientModal from "../components/AddClientModal";
+import AddUserModal from "../components/AddUserModal";
+import EditUserModal from "../components/EditUserModal";
 
-const ClientsPage = () => {
+const UsersPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState('All');
-  const [countryFilter, setCountryFilter] = useState('All');
+  const [roleFilter, setRoleFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [hoveredRow, setHoveredRow] = useState(null);
-  const [isAddClientOpen, setIsAddClientOpen] = useState(false);
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [currentClient, setCurrentClient] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleClientClick = (clientId) => {
-    navigate(`/dashboard/clients/${clientId}`);
-  };
-
-  const handleEditClient = (client) => {
-    setCurrentClient(client);
+  const handleEditUser = (user) => {
+    setCurrentUser(user);
     setIsEditModalOpen(true);
   };
 
-  const handleDeleteClient = (client) => {
+  const handleDeleteUser = (user) => {
     // Delete logic 
-    console.log("Deleting client:", client);
+    console.log("Deleting user:", user);
   };
 
-  const handleAddClient = (newClient) => {
-    // API
-    console.log("New client added:", newClient);
-    alert(`New client ${newClient.name} has been added successfully!`);
+  const handleAddUser = (newUser) => {
+    // API call to create user with password
+    console.log("New user added:", newUser);
+    alert(`New user ${newUser.name} has been created successfully!`);
   };
 
-  const handleSaveClient = (updatedClient) => {
-    // API 
-    console.log("Client updated:", updatedClient);
-    alert(`Client ${updatedClient.name} has been updated successfully!`);
+  const handleSaveUser = (updatedUser) => {
+    // API call to update user
+    console.log("User updated:", updatedUser);
+    alert(`User ${updatedUser.name} has been updated successfully!`);
   };
 
-  const clients = [
-    {
-      id: 1,
-      name: 'James Wilson',
-      type: 'Customer',
-      profession: 'Software Engineer',
-      country: 'Canada',
-      contact: 'james.wilson@email.com',
-      phone: '+1 (416) 123-4567',
-      visaStatus: 'PR Approved',
-      lastActivity: '2023-06-15',
-      applications: 3
-    },
-    {
-      id: 2,
-      name: 'Tech Talent Inc.',
-      type: 'Agent',
-      profession: 'IT Recruitment',
-      country: 'USA',
-      contact: 'contact@techtalent.com',
-      phone: '+1 (212) 987-6543',
-      visaStatus: 'L1 Processing',
-      lastActivity: '2023-06-18',
-      applications: 12
-    },
-    {
-      id: 3,
-      name: 'Sophia Rodriguez',
-      type: 'Customer',
-      profession: 'Healthcare Worker',
-      country: 'Australia',
-      contact: 'sophia.r@email.com',
-      phone: '+61 2 4567 8910',
-      visaStatus: 'Assessment',
-      lastActivity: '2023-06-10',
-      applications: 1
-    },
-    {
-      id: 4,
-      name: 'Global Health Partners',
-      type: 'Agent',
-      profession: 'Medical Staffing',
-      country: 'UK',
-      contact: 'info@globalhealth.com',
-      phone: '+44 20 7123 4567',
-      visaStatus: 'PR Approved',
-      lastActivity: '2023-06-20',
-      applications: 28
-    },
-    {
-      id: 5,
-      name: 'Mohammed Ali',
-      type: 'Customer',
-      profession: 'Construction Manager',
-      country: 'UAE',
-      contact: 'mohammed.ali@email.com',
-      phone: '+971 50 123 4567',
-      visaStatus: 'Visa Expired',
-      lastActivity: '2023-05-17',
-      applications: 2
-    },
-    {
-      id: 6,
-      name: 'Engineering Solutions Ltd.',
-      type: 'Agent',
-      profession: 'Engineering',
-      country: 'Germany',
-      contact: 'hr@engsolutions.de',
-      phone: '+49 30 1234567',
-      visaStatus: 'Blue Card',
-      lastActivity: '2023-06-05',
-      applications: 15
-    },
-    {
-      id: 7,
-      name: 'Emma Johnson',
-      type: 'Customer',
-      profession: 'Teacher',
-      country: 'New Zealand',
-      contact: 'emma.j@email.com',
-      phone: '+64 9 123 4567',
-      visaStatus: 'Work Visa',
-      lastActivity: '2023-06-12',
-      applications: 1
-    },
-  ];
+const users = [
+  {
+    id: 1,
+    name: 'John Smith',
+    email: 'john.smith@migrationco.com',
+    phone: '+1 (555) 123-4567',
+    role: 'Admin',
+    status: 'Active',
+    lastLogin: '2023-06-20 14:30',
+    createdAt: '2022-01-15'
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    email: 'sarah.j@migrationco.com',
+    phone: '+1 (555) 234-5678',
+    role: 'Sales',
+    status: 'Active',
+    lastLogin: '2023-06-18 09:15',
+    createdAt: '2022-03-10'
+  },
+  {
+    id: 3,
+    name: 'Michael Chen',
+    email: 'michael.chen@migrationco.com',
+    phone: '+1 (555) 345-6789',
+    role: 'Agent',
+    status: 'Active',
+    lastLogin: '2023-06-15 11:45',
+    createdAt: '2022-05-20'
+  },
+  {
+    id: 4,
+    name: 'Emma Davis',
+    email: 'emma.davis@migrationco.com',
+    phone: '+1 (555) 456-7890',
+    role: 'Sales',
+    status: 'Inactive',
+    lastLogin: '2023-05-10 16:20',
+    createdAt: '2022-07-05'
+  },
+  {
+    id: 5,
+    name: 'David Wilson',
+    email: 'david.w@migrationco.com',
+    phone: '+1 (555) 567-8901',
+    role: 'Agent',
+    status: 'Active',
+    lastLogin: '2023-06-19 13:10',
+    createdAt: '2022-09-12'
+  },
+  {
+    id: 6,
+    name: 'Lisa Brown',
+    email: 'lisa.brown@migrationco.com',
+    phone: '+1 (555) 678-9012',
+    role: 'Admin',
+    status: 'Active',
+    lastLogin: '2023-06-17 10:05',
+    createdAt: '2022-11-30'
+  },
+];
 
-  // Filter clients based on search and filters
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.contact.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = typeFilter === 'All' || client.type === typeFilter;
-    const matchesCountry = countryFilter === 'All' || client.country === countryFilter;
-    return matchesSearch && matchesType && matchesCountry;
+  // Filter users based on search and filters
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = roleFilter === 'All' || user.role === roleFilter;
+    const matchesStatus = statusFilter === 'All' || user.status === statusFilter;
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   // Pagination
-  const clientsPerPage = 5;
-  const totalPages = Math.ceil(filteredClients.length / clientsPerPage);
-  const paginatedClients = filteredClients.slice(
-    (currentPage - 1) * clientsPerPage,
-    currentPage * clientsPerPage
+  const usersPerPage = 5;
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * usersPerPage,
+    currentPage * usersPerPage
   );
 
   const containerVariants = {
@@ -188,14 +159,19 @@ const ClientsPage = () => {
     }
   };
 
-  const getVisaStatusColor = (visaStatus) => {
-    switch (visaStatus) {
-      case 'PR Approved': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'Work Visa': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'Assessment': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'Visa Expired': return 'bg-red-100 text-red-700 border-red-200';
+  const getRoleColor = (role) => {
+    switch (role) {
+      case 'Admin': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'Sales': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'Agent': return 'bg-green-100 text-green-700 border-green-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
+  };
+
+  const getStatusColor = (status) => {
+    return status === 'Active' 
+      ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+      : 'bg-red-100 text-red-700 border-red-200';
   };
 
   return (
@@ -215,13 +191,13 @@ const ClientsPage = () => {
             <motion.h1
               className="text-heading-lg font-bold bg-gradient-primary bg-clip-text text-transparent"
             >
-              Clients Management
+              Users Management
             </motion.h1>
-            <p className="text-muted-dark text-sm sm:text-base">Manage your clients</p>
+            <p className="text-muted-dark text-sm sm:text-base">Manage your team members</p>
             <div className="flex items-center justify-center md:justify-start gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                {filteredClients.length} Active Clients
+                {filteredUsers.filter(u => u.status === 'Active').length} Active Users
               </span>
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
@@ -234,7 +210,7 @@ const ClientsPage = () => {
             whileHover={{ scale: 1.02 }}
           >
             <motion.button
-              onClick={() => setIsAddClientOpen(true)}
+              onClick={() => setIsAddUserOpen(true)}
               className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base cursor-pointer"
               whileHover={{
                 scale: 1.05,
@@ -243,23 +219,68 @@ const ClientsPage = () => {
               whileTap={{ scale: 0.98 }}
             >
               <Plus size={16} className="sm:w-5 sm:h-5 group-hover:rotate-180 transition-transform duration-300" />
-              <span className="hidden sm:inline">Add New Client</span>
-              <span className="sm:hidden">Add Client</span>
+              <span className="hidden sm:inline">Add New User</span>
+              <span className="sm:hidden">Add User</span>
             </motion.button>
           </motion.div>
         </motion.div>
 
         {/* Search and Filters */}
-        <ClientsFilters
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          typeFilter={typeFilter}
-          setTypeFilter={setTypeFilter}
-          countryFilter={countryFilter}
-          setCountryFilter={setCountryFilter}
-        />
+        <motion.div
+          variants={itemVariants}
+          className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-4 sm:p-6 mb-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Search */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400 z-1" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="pl-10 w-full py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
 
-        {/* Clients Table */}
+            {/* Role Filter */}
+            <div className="relative">
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+              >
+                <option value="All">All Roles</option>
+                <option value="Admin">Admin</option>
+                <option value="Sales">Sales</option>
+                <option value="Agent">Agent</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <ChevronDown className="h-5 w-5 text-[var(--color-primary)]" />
+              </div>
+            </div>
+
+            {/* Status Filter */}
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+              >
+                <option value="All">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <ChevronDown className="h-5 w-5 text-[var(--color-primary)]" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Users Table */}
         <motion.div
           variants={itemVariants}
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
@@ -268,10 +289,10 @@ const ClientsPage = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
-                Client Overview
+                Users Overview
               </h3>
               <div className="text-xs sm:text-sm text-gray-500">
-                {filteredClients.length} of {clients.length} clients
+                {filteredUsers.length} of {users.length} users
               </div>
             </div>
           </div>
@@ -282,12 +303,11 @@ const ClientsPage = () => {
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
                   {[
-                    'Client Information',
-                    'Type',
-                    'Country',
-                    'Visa Status',
-                    'Applications',
-                    'Last Activity',
+                    'User Information',
+                    'Role',
+                    'Status',
+                    'Last Login',
+                    'Created At',
                     'Actions'
                   ].map((header, index) => (
                     <motion.th
@@ -304,103 +324,93 @@ const ClientsPage = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <AnimatePresence mode="wait">
-                  {paginatedClients.length > 0 ? (
-                    paginatedClients.map((client, index) => (
+                  {paginatedUsers.length > 0 ? (
+                    paginatedUsers.map((user, index) => (
                       <motion.tr
-                        key={client.id}
+                        key={user.id}
                         variants={tableRowVariants}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
                         transition={{ delay: index * 0.05 }}
                         className="group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-100"
-                        onMouseEnter={() => setHoveredRow(client.id)}
+                        onMouseEnter={() => setHoveredRow(user.id)}
                         onMouseLeave={() => setHoveredRow(null)}
                       >
-                        <td className="px-5 py-4">
+                        <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
                             <motion.div
-                              className={`p-2 rounded-xl ${client.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'}`}
+                              className={`p-2 rounded-xl ${
+                                user.role === 'Admin' ? 'bg-purple-100' : 
+                                user.role === 'Sales' ? 'bg-blue-100' : 'bg-green-100'
+                              }`}
                               whileHover={{ rotate: 360, scale: 1.1 }}
                               transition={{ duration: 0.5 }}
                             >
-                              {client.type === 'Customer' ? (
-                                <User className={`h-5 w-5 ${client.type === 'Customer' ? 'text-blue-600' : 'text-indigo-600'}`} />
+                              {user.role === 'Admin' ? (
+                                <Shield className="h-5 w-5 text-purple-600" />
+                              ) : user.role === 'Sales' ? (
+                                <Briefcase className="h-5 w-5 text-blue-600" />
                               ) : (
-                                <Briefcase className="h-5 w-5 text-indigo-600" />
+                                <User className="h-5 w-5 text-green-600" />
                               )}
                             </motion.div>
                             <div
-                              onClick={() => handleClientClick(client.id)}
                               className="space-y-2 cursor-pointer">
                               <div className="text-sm font-semibold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors">
-                                {client.name}
+                                {user.name}
                               </div>
                               <div className="flex items-center space-x-2 text-xs text-muted-dark">
                                 <Mail size={12} />
-                                <span>{client.contact}</span>
+                                <span>{user.email}</span>
                               </div>
                               <div className="flex items-center space-x-2 text-xs text-muted-dark">
                                 <Phone size={12} />
-                                <span>{client.phone}</span>
+                                <span>{user.phone}</span>
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <motion.span
-                            className={`px-3 py-1 text-xs font-semibold rounded-full border ${client.type === 'Customer'
-                              ? 'bg-blue-100 text-blue-800 border-blue-200'
-                              : 'bg-indigo-100 text-indigo-800 border-indigo-200'
-                              }`}
+                            className={`px-3 py-1 text-xs font-semibold rounded-full border ${getRoleColor(user.role)}`}
                             whileHover={{ scale: 1.05 }}
                           >
-                            {client.type}
+                            {user.role}
+                          </motion.span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <motion.span
+                            className={`px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(user.status)}`}
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            {user.status}
                           </motion.span>
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center gap-2">
-                            <Globe size={14} className="text-gray-500" />
-                            <span className="text-sm font-medium text-gray-700">{client.country}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <motion.span
-                            className={`px-3 py-1 text-xs font-semibold rounded-full border ${getVisaStatusColor(client.visaStatus)}`}
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            {client.visaStatus}
-                          </motion.span>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="flex items-center justify-center gap-2">
-                            <ScrollText size={16} className="text-gray-500" />
-                            <span className="text-sm font-medium text-gray-700">{client.applications}</span>
+                            <Calendar size={14} className="text-gray-500" />
+                            <span className="text-sm text-gray-500">{user.lastLogin}</span>
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center gap-2">
                             <Calendar size={14} className="text-gray-500" />
-                            <span className="text-sm text-gray-500">{client.lastActivity}</span>
+                            <span className="text-sm text-gray-500">{user.createdAt}</span>
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
                             {[
                               {
-                                icon: Eye,
-                                color: 'text-blue-600 hover:text-blue-800',
-                                action: () => handleClientClick(client.id)
-                              },
-                              {
                                 icon: Edit2,
                                 color: 'text-green-600 hover:text-green-800',
-                                action: () => handleEditClient(client)
+                                action: () => handleEditUser(user)
                               },
                               {
                                 icon: Trash2,
                                 color: 'text-red-600 hover:text-red-800',
-                                action: () => handleDeleteClient(client)
+                                action: () => handleDeleteUser(user)
                               }].map(({ icon: Icon, color, action }, idx) => (
                                 <motion.button
                                   key={idx}
@@ -409,7 +419,7 @@ const ClientsPage = () => {
                                   whileHover={{ scale: 1.1, rotate: idx === 0 ? 0 : 15 }}
                                   whileTap={{ scale: 0.9 }}
                                   initial={{ opacity: 0.7 }}
-                                  animate={{ opacity: hoveredRow === client.id ? 1 : 0.7 }}
+                                  animate={{ opacity: hoveredRow === user.id ? 1 : 0.7 }}
                                 >
                                   <Icon size={16} />
                                 </motion.button>
@@ -424,13 +434,13 @@ const ClientsPage = () => {
                       animate={{ opacity: 1 }}
                       className="hover:bg-gray-50"
                     >
-                      <td colSpan={8} className="px-6 py-12 text-center">
+                      <td colSpan={6} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center space-y-4">
                           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                             <Search size={24} className="text-gray-400" />
                           </div>
                           <div className="text-gray-500">
-                            <p className="text-lg font-medium">No clients found</p>
+                            <p className="text-lg font-medium">No users found</p>
                             <p className="text-sm">Try adjusting your search criteria</p>
                           </div>
                         </div>
@@ -445,11 +455,11 @@ const ClientsPage = () => {
           {/* Mobile Cards */}
           <div className="lg:hidden">
             <AnimatePresence mode="wait">
-              {paginatedClients.length > 0 ? (
+              {paginatedUsers.length > 0 ? (
                 <div className="space-y-4 p-4">
-                  {paginatedClients.map((client, index) => (
+                  {paginatedUsers.map((user, index) => (
                     <motion.div
-                      key={client.id}
+                      key={user.id}
                       variants={tableRowVariants}
                       initial="hidden"
                       animate="visible"
@@ -461,79 +471,71 @@ const ClientsPage = () => {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
                           <motion.div
-                            className={`p-2 rounded-xl ${client.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'}`}
+                            className={`p-2 rounded-xl ${
+                              user.role === 'Admin' ? 'bg-purple-100' : 
+                              user.role === 'Sales' ? 'bg-blue-100' : 'bg-green-100'
+                            }`}
                             whileHover={{ rotate: 360, scale: 1.1 }}
                             transition={{ duration: 0.5 }}
                           >
-                            {client.type === 'Customer' ? (
-                              <User className={`h-4 w-4 ${client.type === 'Customer' ? 'text-blue-600' : 'text-indigo-600'}`} />
+                            {user.role === 'Admin' ? (
+                              <Shield className="h-4 w-4 text-purple-600" />
+                            ) : user.role === 'Sales' ? (
+                              <Briefcase className="h-4 w-4 text-blue-600" />
                             ) : (
-                              <Briefcase className="h-4 w-4 text-indigo-600" />
+                              <User className="h-4 w-4 text-green-600" />
                             )}
                           </motion.div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 text-sm">{client.name}</h4>
-                            <p className="text-xs text-gray-600">{client.type}</p>
+                            <h4 className="font-semibold text-gray-900 text-sm">{user.name}</h4>
+                            <p className="text-xs text-gray-600">{user.role}</p>
                           </div>
                         </div>
+                        <motion.span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(user.status)}`}
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          {user.status}
+                        </motion.span>
                       </div>
 
                       {/* Contact Info */}
                       <div className="space-y-2 mb-3">
                         <div className="flex items-center space-x-2 text-xs text-gray-600">
                           <Mail size={12} />
-                          <span className="truncate">{client.contact}</span>
+                          <span className="truncate">{user.email}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-xs text-gray-600">
                           <Phone size={12} />
-                          <span>{client.phone}</span>
+                          <span>{user.phone}</span>
                         </div>
                       </div>
 
                       {/* Details */}
                       <div className="grid grid-cols-2 gap-3 mb-3">
                         <div className="flex items-center space-x-2 text-xs">
-                          <Globe size={12} className="text-gray-500" />
-                          <span>{client.country}</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-xs">
-                          <Home size={12} className="text-gray-500" />
-                          <span>{client.applications} applications</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-xs">
-                          <Flag size={12} className="text-gray-500" />
-                          <span>{client.visaStatus}</span>
+                          <Calendar size={12} className="text-gray-500" />
+                          <span>Last: {user.lastLogin.split(' ')[0]}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-xs">
                           <Calendar size={12} className="text-gray-500" />
-                          <span>{client.lastActivity}</span>
+                          <span>Created: {user.createdAt}</span>
                         </div>
                       </div>
 
                       {/* Bottom section */}
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <motion.span
-                          className={`px-2 py-1 text-xs font-semibold rounded-full border ${getVisaStatusColor(client.visaStatus)}`}
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          {client.visaStatus}
-                        </motion.span>
                         <div className="flex items-center space-x-1">
                           {[
                             {
-                              icon: Eye,
-                              color: 'text-blue-600',
-                              action: () => handleClientClick(client.id)
-                            },
-                            {
                               icon: Edit2,
                               color: 'text-green-600',
-                              action: () => handleEditClient(client)
+                              action: () => handleEditUser(user)
                             },
                             {
                               icon: Trash2,
                               color: 'text-red-600',
-                              action: () => handleDeleteClient(client)
+                              action: () => handleDeleteUser(user)
                             },
                           ].map(({ icon: Icon, color, action }, idx) => (
                             <motion.button
@@ -562,7 +564,7 @@ const ClientsPage = () => {
                       <Search size={24} className="text-gray-400" />
                     </div>
                     <div className="text-gray-500">
-                      <p className="text-lg font-medium">No clients found</p>
+                      <p className="text-lg font-medium">No users found</p>
                       <p className="text-sm">Try adjusting your search criteria</p>
                     </div>
                   </div>
@@ -579,7 +581,7 @@ const ClientsPage = () => {
             className="flex flex-col sm:flex-row justify-between items-center mt-6 bg-white/70 backdrop-blur-xl rounded-xl p-4 shadow-lg border border-white/20 gap-4"
           >
             <div className="text-xs sm:text-sm text-gray-600 font-medium text-center sm:text-left">
-              Showing {(currentPage - 1) * clientsPerPage + 1} to {Math.min(currentPage * clientsPerPage, filteredClients.length)} of {filteredClients.length} clients
+              Showing {(currentPage - 1) * usersPerPage + 1} to {Math.min(currentPage * usersPerPage, filteredUsers.length)} of {filteredUsers.length} users
             </div>
             <div className="flex items-center space-x-2">
               <motion.button
@@ -630,19 +632,19 @@ const ClientsPage = () => {
       </div>
 
       {/* Modals */}
-       <AddClientModal 
-        isOpen={isAddClientOpen} 
-        onClose={() => setIsAddClientOpen(false)}
-        onSave={handleAddClient}
-      />
-      <EditClientModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)}
-        onSave={handleSaveClient}
-        client={currentClient}
-      /> 
+      <AddUserModal 
+  isOpen={isAddUserOpen} 
+  onClose={() => setIsAddUserOpen(false)}
+  onSave={handleAddUser}
+/>
+<EditUserModal 
+  isOpen={isEditModalOpen} 
+  onClose={() => setIsEditModalOpen(false)}
+  onSave={handleSaveUser}
+  user={currentUser}
+/>
     </motion.div>
   );
 };
 
-export default ClientsPage;
+export default UsersPage;

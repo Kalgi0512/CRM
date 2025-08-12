@@ -77,7 +77,7 @@ const LeadsFilters = ({
               transition={{ delay: index * 0.1 }}
             >
               <select
-                className="appearance-none bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-transparent transition-all duration-300 hover:shadow-md cursor-pointer w-full text-xs sm:text-sm"
+                className="appearance-none bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-10 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none transition-all duration-300 hover:shadow-md cursor-pointer w-full text-xs sm:text-sm"
                 value={filter.value}
                 onChange={(e) => filter.setter(e.target.value)}
               >

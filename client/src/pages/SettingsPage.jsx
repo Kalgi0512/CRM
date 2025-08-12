@@ -16,13 +16,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-/**
- * Settings Hub - beautiful, responsive, modal-driven
- * - Top row: small quick cards (Profile / Security / Notifications / Theme)
- * - Second row: features (Preferences / API & Integrations / Billing / Privacy / Audit Logs)
- * - Click a card to open modal with settings and actions
- */
-
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const fadeUp = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
 

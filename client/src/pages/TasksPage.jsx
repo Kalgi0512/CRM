@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, CheckCircle2, Clock, AlertTriangle, Trash2, Edit2, Calendar, Filter, Search, Briefcase, Clipboard, ClipboardList, } from "lucide-react";
+import AddTaskModal from "../components/AddTaskModal";
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState([
@@ -49,6 +50,7 @@ const TasksPage = () => {
   const [hoveredTask, setHoveredTask] = useState(null);
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -158,7 +160,7 @@ const TasksPage = () => {
   };
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="md:p-6">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -171,14 +173,15 @@ const TasksPage = () => {
           className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
         >
           <div className="space-y-1">
-            <h1 className="text-heading-lg font-bold bg-gradient-primary bg-clip-text text-transparent pb-1">Task Management</h1>
-            <p className="text-muted-dark text-sm sm:text-base">Track, manage, and complete your daily workflow tasks efficiently</p>
+            <h1 className="text-heading-lg text-center sm:text-left font-bold bg-gradient-primary bg-clip-text text-transparent pb-1">Task Management</h1>
+            <p className="text-muted-dark text-center sm:text-left text-sm sm:text-base">Track, manage, and complete your daily workflow tasks efficiently</p>
           </div>
           <motion.div
             className="flex gap-3 mx-auto md:mx-0"
             whileHover={{ scale: 1.02 }}
           >
             <motion.button
+            onClick={() => setIsAddTaskOpen(true)}
               className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base cursor-pointer"
               whileHover={{
                 scale: 1.05,
@@ -196,7 +199,7 @@ const TasksPage = () => {
         {/* Stats Cards */}
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
         >
           {[
             { label: "Total", value: stats.total, color: "bg-blue-100", text: "text-blue-500", icon: <Calendar className="text-blue-500" size={26} /> },
@@ -210,13 +213,13 @@ const TasksPage = () => {
               whileHover="hover"
               className="bg-white/80 rounded-xl shadow-md border border-white/20 p-6"
             >
-              <div className="flex justify-between items-start">
+              <div className="flex justify-center sm:justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-dark">{stat.label}</p>
-                  <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
+                  <p className="text-sm text-center sm:text-left font-medium text-muted-dark">{stat.label}</p>
+                  <h3 className="text-2xl text-center sm:text-left font-bold mt-1">{stat.value}</h3>
                 </div>
                 <motion.div
-                  className={`p-3 rounded-lg ${stat.color}`}
+                  className={`hidden sm:block p-3 rounded-lg ${stat.color}`}
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.4 }}
                 >
@@ -244,7 +247,7 @@ const TasksPage = () => {
               />
             </div>
 
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full sm:w-auto">
               {["All", "Pending", "In Progress", "Completed"].map((status) => (
                 <motion.button
                   key={status}
@@ -270,7 +273,7 @@ const TasksPage = () => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden"
         >
           <div className="p-4 sm:p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
                 Task Overview
@@ -300,16 +303,16 @@ const TasksPage = () => {
                       onMouseLeave={() => setHoveredTask(null)}
                     >
                       {/* Task Content */}
-                      <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                      <div className="flex flex-col lg:flex-row lg:items-center gap-4 border-b sm:border-none border-gray-200 pb-2 sm:pb-0">
                         {/* Left Side - Main Content */}
                         <div className="flex-1 space-y-3">
-                          <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex flex-col sm:flex-row items-center gap-3">
                             <motion.div
-                              className="p-2 rounded-xl bg-[var(--color-primary)]/20"
+                              className="p-2 hidden sm:block rounded-xl bg-[var(--color-primary)]/20"
                               whileHover={{ rotate: 360, scale: 1.1 }}
                               transition={{ duration: 0.5 }}
                             >
-                              <ClipboardList className="h-5 w-5 text-[var(--color-primary)]" />
+                              <ClipboardList className="hidden sm:block h-5 w-5 text-[var(--color-primary)]" />
                             </motion.div>
                             <h4 className="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors">
                               {task.title}
@@ -341,7 +344,7 @@ const TasksPage = () => {
                             {task.description}
                           </p>
 
-                          <div className="flex items-center gap-4 text-xs text-muted-dark">
+                          <div className="flex flex-col sm:flex-row items-center gap-4 text-xs text-muted-dark">
                             <div className="flex items-center gap-1">
                               <Calendar size={12} className="mr-1" />
                               <span>Due: {task.dueDate}</span>
@@ -354,7 +357,7 @@ const TasksPage = () => {
                         </div>
 
                         {/* Right Side - Actions */}
-                        <div className="flex lg:flex-col gap-2">
+                        <div className="flex justify-center lg:flex-col gap-2">
                           {[
                             {
                               icon: CheckCircle2,
@@ -413,6 +416,11 @@ const TasksPage = () => {
           </div>
         </motion.div>
       </motion.div>
+      <AddTaskModal 
+  isOpen={isAddTaskOpen} 
+  onClose={() => setIsAddTaskOpen(false)}
+  onSave={(newTask) => setTasks(prev => [...prev, newTask])}
+/>
     </div>
   );
 };

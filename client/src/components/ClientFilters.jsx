@@ -29,7 +29,7 @@ const ClientsFilters = ({
     >
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Search Bar */}
-        <div className="relative flex-1 max-w-full lg:max-w-lg">
+        <div className="relative flex-1 max-w-full lg:max-w-5xl">
           <motion.div
             className="absolute inset-y-0 z-1 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none"
             animate={{
@@ -43,7 +43,7 @@ const ClientsFilters = ({
           <input
             type="text"
             placeholder="Search clients by name or email..."
-            className="pl-10 sm:pl-12 w-full p-3 border border-gray-200 rounded-xl focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-md text-sm sm:text-base"
+            className="pl-10 sm:pl-12 w-full p-3 border border-gray-200 rounded-xl focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-md text-xs sm:text-base"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

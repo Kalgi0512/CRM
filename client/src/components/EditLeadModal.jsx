@@ -606,7 +606,7 @@ const EditLeadModal = ({ isOpen, onClose, onSave, lead }) => {
                               Saving...
                             </>
                           ) : (
-                            'Update Lead'
+                            'Update'
                           )}
                         </span>
                       </motion.button>

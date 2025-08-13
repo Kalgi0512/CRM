@@ -179,7 +179,7 @@ const users = [
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-8 p-4 md:p-6"
+      className="space-y-8 md:p-6"
     >
       <div className="relative z-10">
         {/* Header */}
@@ -239,7 +239,7 @@ const users = [
               <input
                 type="text"
                 placeholder="Search users..."
-                className="pl-10 w-full py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                className="pl-10 w-full py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all text-sm sm:text-base duration-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -286,7 +286,7 @@ const users = [
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
         >
           <div className="p-4 sm:p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
                 Users Overview
@@ -465,10 +465,10 @@ const users = [
                       animate="visible"
                       exit="exit"
                       transition={{ delay: index * 0.05 }}
-                      className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
+                      className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-center items-center"
                     >
                       {/* Header */}
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex flex-col gap-3 items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
                           <motion.div
                             className={`p-2 rounded-xl ${
@@ -487,7 +487,7 @@ const users = [
                             )}
                           </motion.div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 text-sm">{user.name}</h4>
+                            <h4 className="font-semibold text-gray-900 text-md">{user.name}</h4>
                             <p className="text-xs text-gray-600">{user.role}</p>
                           </div>
                         </div>
@@ -512,14 +512,14 @@ const users = [
                       </div>
 
                       {/* Details */}
-                      <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                         <div className="flex items-center space-x-2 text-xs">
                           <Calendar size={12} className="text-gray-500" />
-                          <span>Last: {user.lastLogin.split(' ')[0]}</span>
+                          <span className="text-gray-600">Last login: {user.lastLogin.split(' ')[0]}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-xs">
                           <Calendar size={12} className="text-gray-500" />
-                          <span>Created: {user.createdAt}</span>
+                          <span className="text-gray-600">Created: {user.createdAt}</span>
                         </div>
                       </div>
 

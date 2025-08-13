@@ -541,7 +541,7 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
                               Creating...
                             </>
                           ) : (
-                            'Create User'
+                            'Create'
                           )}
                         </span>
                       </motion.button>

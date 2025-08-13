@@ -610,7 +610,7 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                               Saving...
                             </>
                           ) : (
-                            'Update Client'
+                            'Update'
                           )}
                         </span>
                       </motion.button>

@@ -16,7 +16,7 @@ const LeadsPage = () => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-const [currentLead, setCurrentLead] = useState(null);
+  const [currentLead, setCurrentLead] = useState(null);
 
   const navigate = useNavigate();
 
@@ -39,18 +39,18 @@ const [currentLead, setCurrentLead] = useState(null);
   };
 
   const handleAddLead = (newLead) => {
-  // api
-  console.log("New lead added:", newLead);
-  // For demo
-  alert(`New lead for ${newLead.name} has been added successfully!`);
-};
+    // api
+    console.log("New lead added:", newLead);
+    // For demo
+    alert(`New lead for ${newLead.name} has been added successfully!`);
+  };
 
-const handleSaveLead = (updatedLead) => {
-  // api
-  console.log("Lead updated:", updatedLead);
-  // for demo
-  alert(`Lead ${updatedLead.name} has been updated successfully!`);
-};
+  const handleSaveLead = (updatedLead) => {
+    // api
+    console.log("Lead updated:", updatedLead);
+    // for demo
+    alert(`Lead ${updatedLead.name} has been updated successfully!`);
+  };
 
   const leads = [
     {
@@ -211,7 +211,7 @@ const handleSaveLead = (updatedLead) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-8 p-4 md:p-6"
+      className="space-y-8 md:p-6"
     >
       <div className="relative z-10">
         {/* Header */}
@@ -242,7 +242,7 @@ const handleSaveLead = (updatedLead) => {
             whileHover={{ scale: 1.02 }}
           >
             <motion.button
-            onClick={() => setIsAddLeadOpen(true)}
+              onClick={() => setIsAddLeadOpen(true)}
               className="group relative overflow-hidden flex items-center gap-2 sm:gap-3 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:shadow-xl bg-gradient-primary transition-all duration-300 text-sm sm:text-base cursor-pointer"
               whileHover={{
                 scale: 1.05,
@@ -275,7 +275,7 @@ const handleSaveLead = (updatedLead) => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
         >
           <div className="p-4 sm:p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
                 Lead Overview
@@ -408,10 +408,10 @@ const handleSaveLead = (updatedLead) => {
                               {
                                 icon: Edit2,
                                 color: 'text-green-600 hover:text-green-800',
-                                  action: (lead) => {
-    setCurrentLead(lead);
-    setIsEditModalOpen(true);
-  }
+                                action: (lead) => {
+                                  setCurrentLead(lead);
+                                  setIsEditModalOpen(true);
+                                }
                               },
                               {
                                 icon: Trash2,
@@ -462,121 +462,92 @@ const handleSaveLead = (updatedLead) => {
           <div className="lg:hidden">
             <AnimatePresence mode="wait">
               {paginatedLeads.length > 0 ? (
-                <div className="space-y-4 p-4">
-                  {paginatedLeads.map((lead, index) => (
+                <div className="divide-y divide-gray-200">
+                  {paginatedLeads.map((lead) => (
                     <motion.div
                       key={lead.id}
+                      className="p-6 space-y-3"
                       variants={tableRowVariants}
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      transition={{ delay: index * 0.05 }}
-                      className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
                     >
-                      {/* Header */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <motion.div
-                            className={`p-2 rounded-xl ${lead.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'}`}
-                            whileHover={{ rotate: 360, scale: 1.1 }}
-                            transition={{ duration: 0.5 }}
-                          >
+                      {/* Header with name and priority */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl ${lead.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'}`}>
                             {lead.type === 'Customer' ? (
-                              <User className={`h-4 w-4 ${lead.type === 'Customer' ? 'text-blue-600' : 'text-indigo-600'}`} />
+                              <User className={`h-5 w-5 ${lead.type === 'Customer' ? 'text-blue-600' : 'text-indigo-600'}`} />
                             ) : (
-                              <Briefcase className="h-4 w-4 text-indigo-600" />
+                              <Briefcase className="h-5 w-5 text-indigo-600" />
                             )}
-                          </motion.div>
+                          </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 text-sm">{lead.name}</h4>
-                            <p className="text-xs text-gray-600">{lead.profession}</p>
+                            <h4 className="font-semibold text-gray-900">{lead.name}</h4>
+                            <p className="text-sm text-gray-600">{lead.profession}</p>
                           </div>
                         </div>
-                        <motion.span
-                          className={`px-2 py-1 text-xs font-semibold rounded-full border ${getPriorityColor(lead.priority)}`}
-                          whileHover={{ scale: 1.05 }}
-                        >
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(lead.priority)}`}>
                           {lead.priority}
-                        </motion.span>
+                        </span>
                       </div>
 
-                      {/* Contact Info */}
-                      <div className="space-y-2 mb-3">
-                        <div className="flex items-center space-x-2 text-xs text-gray-600">
-                          <Mail size={12} />
-                          <span className="truncate">{lead.contact}</span>
+                      {/* Contact info */}
+                      <div className="space-y-2 text-xs flex flex-col items-center">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Mail size={14} />
+                          <span>{lead.contact}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-xs text-gray-600">
-                          <Phone size={12} />
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Phone size={14} />
                           <span>{lead.phone}</span>
                         </div>
                       </div>
 
-                      {/* Status and Type */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex flex-wrap gap-2">
-                          <motion.span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full border ${lead.type === 'Customer'
-                              ? 'bg-blue-100 text-blue-800 border-blue-200'
-                              : 'bg-indigo-100 text-indigo-800 border-indigo-200'
-                              }`}
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            {lead.type}
-                          </motion.span>
-                          <motion.span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full border ${lead.status === 'Initial Contact' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                              lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                                lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                                  lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800 border-green-200' :
-                                    lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800 border-teal-200' :
-                                      lead.status === 'Completed' ? 'bg-gray-100 text-gray-800 border-gray-200' :
-                                        'bg-red-100 text-red-800 border-red-200'
-                              }`}
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            {lead.status}
-                          </motion.span>
-                        </div>
+                      {/* Status and type */}
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${lead.type === 'Customer' ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800'}`}>
+                          {lead.type}
+                        </span>
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${lead.status === 'Initial Contact' ? 'bg-blue-100 text-blue-800' :
+                          lead.status === 'Assessment' ? 'bg-purple-100 text-purple-800' :
+                            lead.status === 'Documentation' ? 'bg-yellow-100 text-yellow-800' :
+                              lead.status === 'Visa Processing' ? 'bg-green-100 text-green-800' :
+                                lead.status === 'Offer Received' ? 'bg-teal-100 text-teal-800' :
+                                  lead.status === 'Completed' ? 'bg-gray-100 text-gray-800' :
+                                    'bg-red-100 text-red-800'}`}>
+                          {lead.status}
+                        </span>
                       </div>
 
-                      {/* Bottom section */}
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      {/* Footer with assigned and actions */}
+                      <div className="flex flex-col justify-center items-center gap-2 pt-2 border-t border-gray-100">
                         <div className="text-xs text-gray-500">
                           <div>Assigned: {lead.assigned}</div>
                           <div>Last contact: {lead.lastContact}</div>
                         </div>
-                        <div className="flex items-center space-x-1">
-                          {[
-                            {
-                              icon: Eye,
-                              color: 'text-blue-600',
-                              action: () => handleLeadClick(lead.id)
-                            },
-                            {
-                              icon: Edit2,
-                              color: 'text-green-600',
-                                action: (lead) => {
-    setCurrentLead(lead);
-    setIsEditModalOpen(true);
-  }
-                            },
-                            {
-                              icon: Trash2,
-                              color: 'text-red-600',
-                              action: () => handleDeleteLead(lead)
-                            },
-                          ].map(({ icon: Icon, color, action }, idx) => (
-                            <motion.button
-                              key={idx}
-                              onClick={action}
-                              className={`p-2 rounded-lg cursor-pointer transition-all duration-200 ${color} hover:bg-gray-100`}
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                            >
-                              <Icon size={14} />
-                            </motion.button>
-                          ))}
+                        <div className="flex">
+                          <button
+                            onClick={() => handleLeadClick(lead.id)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setCurrentLead(lead);
+                              setIsEditModalOpen(true);
+                            }}
+                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLead(lead)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </div>
                     </motion.div>
@@ -659,18 +630,18 @@ const handleSaveLead = (updatedLead) => {
           </motion.div>
         )}
       </div>
-      <AddLeadModal 
-  isOpen={isAddLeadOpen} 
-  onClose={() => setIsAddLeadOpen(false)}
-  onSave={handleAddLead}
-/>
+      <AddLeadModal
+        isOpen={isAddLeadOpen}
+        onClose={() => setIsAddLeadOpen(false)}
+        onSave={handleAddLead}
+      />
 
-<EditLeadModal 
-  isOpen={isEditModalOpen} 
-  onClose={() => setIsEditModalOpen(false)}
-  onSave={handleSaveLead}
-  lead={currentLead}
-/>
+      <EditLeadModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveLead}
+        lead={currentLead}
+      />
     </motion.div>
   );
 };

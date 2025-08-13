@@ -11,9 +11,10 @@ import {
   BarChart,
   Bar,
 } from 'recharts';
+import { motion } from 'framer-motion';
+import { Award, Briefcase, UserCheck, Users } from "lucide-react";
 
 // Mock data to simulate a backend API response.
-// Replace this with a fetch call to your actual backend once it's implemented.
 const mockLeadsOverTime = [
   { name: 'Jan', leads: 4000, placed: 2400 },
   { name: 'Feb', leads: 3000, placed: 1398 },
@@ -40,38 +41,129 @@ const mockAgentPerformance = [
   { name: 'Emily White', activeCases: 21, successRate: '88%' },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+      duration: 0.6
+    }
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  },
+};
+
+const hoverCard = {
+  hover: {
+    y: -5,
+    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+    transition: {
+      type: "spring",
+      stiffness: 200,
+    }
+  }
+};
+
 const ReportsPage = () => {
   return (
-    <div className="p-6 md:p-8 bg-gray-50 min-h-screen">
-      <div className="container-global">
-        {/* Main Heading */}
-        <h1 className="text-heading-lg mb-6 text-gray-800">Reports Dashboard</h1>
+    <div className="md:p-6">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6"
+      >
+        {/* Header Section */}
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+        >
+          <div className="space-y-1 text-center sm:text-left">
+            <h1 className="text-heading-lg font-bold bg-gradient-primary bg-clip-text text-transparent pb-1">Reports</h1>
+            <p className="text-muted-dark text-sm sm:text-base">Track and analyze your migration company's performance</p>
+          </div>
+        </motion.div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-700">Total Candidates</h3>
-            <p className="mt-2 text-4xl font-bold color-primary">5,432</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-700">Placed Candidates</h3>
-            <p className="mt-2 text-4xl font-bold text-green-600">1,210</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-700">Active Agents</h3>
-            <p className="mt-2 text-4xl font-bold text-gray-800">15</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-700">Open Job Posts</h3>
-            <p className="mt-2 text-4xl font-bold color-secondary">245</p>
-          </div>
-        </div>
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+         {[
+            { 
+              label: "Total Candidates", 
+              value: "5,432", 
+              color: "bg-blue-100", 
+              text: "text-blue-500", 
+              icon: <Users className="text-blue-500" size={25} /> 
+            },
+            { 
+              label: "Placed Candidates", 
+              value: "1,210", 
+              color: "bg-green-100", 
+              text: "text-green-500", 
+              icon: <UserCheck className="text-green-500" size={25} /> 
+            },
+            { 
+              label: "Active Agents", 
+              value: "15", 
+              color: "bg-purple-100", 
+              text: "text-purple-500", 
+              icon: <Briefcase className="text-purple-500" size={25} /> 
+            },
+            { 
+              label: "Open Job Posts", 
+              value: "245", 
+              color: "bg-cyan-100", 
+              text: "text-cyan-500", 
+              icon: <Award className="text-cyan-500" size={25} /> 
+            }].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              variants={hoverCard}
+              whileHover="hover"
+              className="bg-white/80 rounded-xl shadow-md border border-white/20 p-6"
+            >
+              <div className="flex justify-center sm:justify-between items-start">
+                <div>
+                  <p className="text-sm text-center sm:text-left font-medium text-muted-dark">{stat.label}</p>
+                  <h3 className={`text-2xl text-center sm:text-left font-bold mt-1 ${stat.text}`}>{stat.value}</h3>
+                </div>
+                <motion.div
+                  className={`hidden sm:block p-3 rounded-lg ${stat.color}`}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.4 }}
+                >
+                 {stat.icon}
+                </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
           {/* Leads Over Time Chart */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4 text-gray-700">Leads and Placements Over Time</h3>
+          <motion.div 
+            whileHover="hover"
+            className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6"
+          >
+            <h3 className="text-description-lg font-semibold text-gray-800 mb-4">Leads and Placements Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={mockLeadsOverTime}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -89,11 +181,14 @@ const ReportsPage = () => {
                 <Line type="monotone" dataKey="placed" stroke="#0F79C5" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* Lead Sources Chart */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4 text-gray-700">Leads by Source</h3>
+          <motion.div 
+            whileHover="hover"
+            className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6"
+          >
+            <h3 className="text-description-lg font-semibold text-gray-800 mb-4">Leads by Source</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={mockLeadSources}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -103,12 +198,21 @@ const ReportsPage = () => {
                 <Bar dataKey="count" fill="#1B3890" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Agent Performance Table */}
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">Agent Performance Overview</h3>
+        <motion.div 
+          variants={itemVariants}
+          className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden"
+        >
+          <div className="p-4 sm:p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <h3 className="text-description-lg font-semibold text-gray-800">
+                Agent Performance Overview
+              </h3>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -126,7 +230,7 @@ const ReportsPage = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {mockAgentPerformance.map((agent, index) => (
-                  <tr key={index}>
+                  <tr key={index} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{agent.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agent.activeCases}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agent.successRate}</td>
@@ -135,8 +239,8 @@ const ReportsPage = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

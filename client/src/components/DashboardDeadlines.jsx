@@ -4,8 +4,8 @@ import { Calendar } from "lucide-react";
 
 const DashboardDeadlines = ({ deadlines = defaultDeadlines }) => (
   <div className="bg-white/80 rounded-xl shadow-xl border border-white/20 p-6">
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-description-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+      <h2 className="text-description-lg text-center sm:text-left font-semibold text-gray-900">Upcoming Deadlines</h2>
       <button className="text-sm text-[var(--color-secondary)] hover:text-[var(--color-primary)] cursor-pointer font-medium">
         View All
       </button>

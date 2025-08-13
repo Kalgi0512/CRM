@@ -9,11 +9,14 @@ import LeadsDetailsPage from "./pages/LeadsDetailsPage";
 import TasksPage from "./pages/TasksPage";
 import ReportsPage from "./pages/ReportsPage";
 import ClientDetailsPage from "./pages/ClientsDetailsPage";
+import SettingsPage from "./pages/SettingsPage";
 import UsersPage from "./pages/UsersPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <>
+    <ScrollToTop />
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard"  element={<DashboardLayout />} >
@@ -25,6 +28,7 @@ const App = () => {
           <Route path="tasks" element={<TasksPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="admin/users" element={<UsersPage />} />
+          <Route path="admin/settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>

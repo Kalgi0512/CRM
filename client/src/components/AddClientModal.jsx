@@ -571,7 +571,7 @@ const AddClientModal = ({ isOpen, onClose, onSave }) => {
                               Saving...
                             </>
                           ) : (
-                            'Save Client'
+                            'Save'
                           )}
                         </span>
                       </motion.button>

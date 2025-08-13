@@ -569,7 +569,7 @@ const EditUserModal = ({ isOpen, onClose, onSave, user }) => {
                               Saving...
                             </>
                           ) : (
-                            'Update User'
+                            'Update'
                           )}
                         </span>
                       </motion.button>

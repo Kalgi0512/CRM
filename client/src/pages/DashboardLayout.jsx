@@ -15,7 +15,7 @@ import {
   BarChart3,
   Shield,
   UserCog,
-  Settings, // Added Settings icon
+  Settings,
   LayoutDashboard
 } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -188,7 +188,7 @@ const DashboardLayout = () => {
         {(sidebarOpen || !window.matchMedia("(max-width: 768px)").matches) && (
           <>
             <motion.aside
-              className={`fixed md:relative top-0 left-0 w-72 h-content bg-white/90 backdrop-blur-xl border-r border-white/30 z-50 shadow-2xl md:shadow-lg`}
+              className={`fixed md:relative top-0 left-0 w-72 h-content bg-white/90 backdrop-blur-xl border-r border-white/30 z-50 shadow-2xl md:shadow-lg overflow-y-auto sm:overflow-y-hidden`}
               initial={{ x: -288, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -288, opacity: 0 }}
@@ -341,7 +341,7 @@ const DashboardLayout = () => {
 
         {/* Content wrapper with glass effect */}
         <motion.div
-          className="relative z-10 bg-white/50 backdrop-blur-sm lg:rounded-2xl p-8 min-h-full shadow-xl border border-white/30"
+          className="relative z-10 bg-white/50 backdrop-blur-sm lg:rounded-2xl p-5 lg:p-8 min-h-full shadow-xl border border-white/30"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}

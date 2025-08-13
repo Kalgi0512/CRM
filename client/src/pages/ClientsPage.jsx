@@ -203,7 +203,7 @@ const ClientsPage = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-8 p-4 md:p-6"
+      className="space-y-8 md:p-6"
     >
       <div className="relative z-10">
         {/* Header */}
@@ -265,7 +265,7 @@ const ClientsPage = () => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
         >
           <div className="p-4 sm:p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <h3 className="text-description-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter size={18} className="sm:w-5 sm:h-5 text-[var(--color-secondary)]" />
                 Client Overview
@@ -455,7 +455,7 @@ const ClientsPage = () => {
                       animate="visible"
                       exit="exit"
                       transition={{ delay: index * 0.05 }}
-                      className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
+                      className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-center items-center"
                     >
                       {/* Header */}
                       <div className="flex items-center justify-between mb-3">

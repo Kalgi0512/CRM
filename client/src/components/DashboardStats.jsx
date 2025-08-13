@@ -3,7 +3,7 @@ import { ArrowUpRight, ArrowDownRight, Users, Briefcase, Globe, BarChart2 } from
 import { hoverCard } from "../dashboardAnimationVariants";
 
 const DashboardStats = ({ stats = defaultStats }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
     {stats.map((stat, index) => (
       <motion.div
         key={index}
@@ -11,17 +11,17 @@ const DashboardStats = ({ stats = defaultStats }) => (
         whileHover="hover"
         className="bg-white/80 rounded-xl shadow-md border border-white/20 p-6"
       >
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between text-center sm:items-start">
           <div>
             <p className="text-sm font-medium text-muted-dark">{stat.title}</p>
-            <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
+            <h3 className="text-lg sm:text-2xl font-bold mt-1">{stat.value}</h3>
             <div className={`flex items-center mt-2 ${stat.isPositive ? 'text-green-600' : 'text-red-600'}`}>
               {stat.isPositive ? <ArrowUpRight size={16} className="mr-1" /> : <ArrowDownRight size={16} className="mr-1" />}
               <span className="text-sm font-medium">{stat.change}</span>
             </div>
           </div>
           <motion.div 
-            className={`p-3 rounded-lg ${stat.color}`}
+            className={`hidden sm:block p-3 rounded-lg ${stat.color}`}
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.4 }}
           >

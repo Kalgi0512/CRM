@@ -4,7 +4,7 @@ import { ChevronLeft, User, Briefcase, Mail, Phone, Calendar, MapPin, Clock, Edi
 import { useNavigate, useParams } from "react-router-dom";
 
 const LeadsDetailsPage = () => {
-   const { id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [notes, setNotes] = useState([
     {
@@ -54,7 +54,7 @@ const LeadsDetailsPage = () => {
 
   const handleAddNote = () => {
     if (newNote.trim() === '') return;
-    
+
     const note = {
       id: notes.length + 1,
       content: newNote,
@@ -62,7 +62,7 @@ const LeadsDetailsPage = () => {
       date: new Date().toISOString().split('T')[0],
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
-    
+
     setNotes([note, ...notes]);
     setNewNote('');
   };
@@ -140,8 +140,8 @@ const LeadsDetailsPage = () => {
   };
 
   return (
-    <div 
-      className="p-4 md:p-6"     
+    <div
+      className="md:p-6"
     >
       <motion.div
         variants={containerVariants}
@@ -150,9 +150,9 @@ const LeadsDetailsPage = () => {
         className="mx-auto"
       >
         {/* Header with back button */}
-        <motion.div 
+        <motion.div
           variants={itemVariants}
-          className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4"
         >
           <motion.button
             onClick={handleBack}
@@ -163,8 +163,8 @@ const LeadsDetailsPage = () => {
             <ChevronLeft size={20} className="group-hover:scale-110 transition-transform" />
             <span className="font-medium">Back to Leads</span>
           </motion.button>
-          
-          <div className="flex gap-3 w-full md:w-auto">
+
+          <div className="flex flex-col sm:flex-row gap-3 w-max mx-auto sm:mx-0 sm:w-auto">
             <motion.button
               onClick={handleConvertToClient}
               whileHover={{ scale: 1.03 }}
@@ -174,10 +174,10 @@ const LeadsDetailsPage = () => {
                 background: 'linear-gradient(90deg, #10b981, #059669)'
               }}
             >
-              <UserPlus  className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+              <UserPlus className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
               <span>Convert to Client</span>
             </motion.button>
-            
+
             <motion.button
               onClick={handleEdit}
               whileHover={{ scale: 1.03 }}
@@ -191,24 +191,24 @@ const LeadsDetailsPage = () => {
         </motion.div>
 
         {/* Lead Summary Card */}
-        <motion.div 
+        <motion.div
           variants={itemVariants}
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8 mb-8 overflow-hidden relative"
         >
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 opacity-5 overflow-hidden blur-xl">
-            <div 
+            <div
               className="w-full h-full rounded-full"
               style={{
                 background: 'linear-gradient(90deg, #1B3890, #0F79C5)'
               }}
             ></div>
           </div>
-          
+
           <div className="relative z-10">
             <div className="flex flex-col lg:flex-row gap-6">
-              <div className="flex items-start gap-4 flex-1">
-                <motion.div 
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 flex-1">
+                <motion.div
                   className={`p-4 rounded-2xl ${lead.type === 'Customer' ? 'bg-blue-100' : 'bg-indigo-100'} shadow-lg`}
                   whileHover={{ rotate: 360, scale: 1.1 }}
                   transition={{ duration: 0.6 }}
@@ -219,11 +219,11 @@ const LeadsDetailsPage = () => {
                     <Briefcase className="h-12 w-12 text-indigo-600" />
                   )}
                 </motion.div>
-                
+
                 <div className="flex-1">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between gap-4 mb-4">
                     <div>
-                      <motion.h1 
+                      <motion.h1
                         className="text-heading-lg text-gray-900 mb-2"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -231,7 +231,7 @@ const LeadsDetailsPage = () => {
                       >
                         {lead.name}
                       </motion.h1>
-                      <motion.p 
+                      <motion.p
                         className="text-lg text-muted-dark font-medium"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -240,9 +240,9 @@ const LeadsDetailsPage = () => {
                         {lead.profession}
                       </motion.p>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-3">
-                      <motion.span 
+
+                    <div className="flex justify-center flex-wrap gap-3">
+                      <motion.span
                         className={`px-4 py-2 text-sm font-semibold rounded-full border shadow-sm ${getPriorityColor(lead.priority)}`}
                         whileHover={{ scale: 1.05 }}
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -251,7 +251,7 @@ const LeadsDetailsPage = () => {
                       >
                         {lead.priority} Priority
                       </motion.span>
-                      <motion.span 
+                      <motion.span
                         className={`px-4 py-2 text-sm font-semibold rounded-full border shadow-sm ${getStatusColor(lead.status)}`}
                         whileHover={{ scale: 1.05 }}
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -262,7 +262,7 @@ const LeadsDetailsPage = () => {
                       </motion.span>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     {[
                       { icon: Mail, label: 'Email', value: lead.contact, color: 'text-blue-500' },
@@ -270,7 +270,7 @@ const LeadsDetailsPage = () => {
                       { icon: MapPin, label: 'Location', value: lead.location, color: 'text-red-500' },
                       { icon: FileText, label: 'Source', value: lead.source, color: 'text-purple-500' }
                     ].map((item, index) => (
-                      <motion.div 
+                      <motion.div
                         key={item.label}
                         className="flex items-center gap-2 p-3 bg-white/60 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/80 transition-all duration-300"
                         initial={{ opacity: 0, y: 20 }}
@@ -299,12 +299,12 @@ const LeadsDetailsPage = () => {
           {/* Left Column - Timeline & Notes */}
           <div className="xl:col-span-2 space-y-8">
             {/* Timeline Section */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 overflow-hidden relative"
-            >              
-              <motion.h2 
-                className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 overflow-hidden relative"
+            >
+              <motion.h2
+                className="text-lg sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 }}
@@ -314,18 +314,18 @@ const LeadsDetailsPage = () => {
                 </div>
                 <span>Lead Timeline</span>
               </motion.h2>
-              
+
               <div className="space-y-2">
                 {timelineEvents.map((event, index) => (
-                  <motion.div 
-                    key={event.id} 
-                    className="flex gap-6 group"
+                  <motion.div
+                    key={event.id}
+                    className="flex sm:gap-6 group"
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.9 + index * 0.1 }}
                   >
                     <div className="flex flex-col items-center">
-                      <motion.div 
+                      <motion.div
                         className="p-3 rounded-full bg-white shadow-lg border-2 border-blue-100 group-hover:border-blue-300 transition-all duration-100"
                         whileHover={{ scale: 1.2 }}
                       >
@@ -335,8 +335,8 @@ const LeadsDetailsPage = () => {
                         <div className="w-0.5 h-12 bg-gradient-to-b from-gray-300 to-transparent my-2"></div>
                       )}
                     </div>
-                    
-                    <div className="flex-1 pb-6">
+
+                    <div className="flex-1 sm:pb-6">
                       <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-white/30 group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="font-bold text-gray-900 text-md">{event.title}</h3>
@@ -349,13 +349,13 @@ const LeadsDetailsPage = () => {
                 ))}
               </div>
             </motion.div>
-            
+
             {/* Notes Section */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 overflow-hidden relative"
-            >              
-              <motion.h2 
+              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 overflow-hidden relative"
+            >
+              <motion.h2
                 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -364,11 +364,11 @@ const LeadsDetailsPage = () => {
                 <div className="p-2 rounded-xl bg-purple-100">
                   <MessageSquare className="text-purple-600 h-6 w-6" />
                 </div>
-                <span>Notes</span>
+                <span className="text-lg sm:text-2xl">Notes</span>
               </motion.h2>
-              
+
               {/* Add Note Form */}
-              <motion.div 
+              <motion.div
                 className="mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -377,7 +377,7 @@ const LeadsDetailsPage = () => {
                 <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  placeholder="Add a detailed note about this lead's progress, requirements, or communication..."
+                  placeholder="Add a note about this lead..."
                   className="w-full p-4 border border-gray-300 rounded-xl focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] outline-none bg-white/80 backdrop-blur-sm transition-all duration-300 font-medium resize-none"
                   rows="4"
                 />
@@ -388,18 +388,18 @@ const LeadsDetailsPage = () => {
                     whileTap={{ scale: 0.98 }}
                     className="group relative overflow-hidden flex items-center gap-2 px-6 py-3 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-primary"
                   >
-                    <Plus  className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                     Add Note
                   </motion.button>
                 </div>
               </motion.div>
-              
+
               {/* Notes List */}
               <div className="space-y-2">
                 <AnimatePresence>
                   {notes.map((note, index) => (
-                    <motion.div 
-                      key={note.id} 
+                    <motion.div
+                      key={note.id}
                       className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 relative overflow-hidden"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -408,10 +408,10 @@ const LeadsDetailsPage = () => {
                       layout
                     >
                       <div className="absolute top-0 left-0 w-1 h-full bg-gradient-primary"></div>
-                      
-                      <div className="flex justify-between items-start mb-1">
+
+                      <div className="flex flex-col sm:flex-row items-center sm:justify-between sm:items-start mb-1">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          <div className="hidden w-8 h-8 bg-gradient-primary rounded-full sm:flex items-center justify-center text-white font-bold text-sm">
                             {note.author.charAt(0)}
                           </div>
                           <p className="font-bold text-gray-900">{note.author}</p>
@@ -424,7 +424,7 @@ const LeadsDetailsPage = () => {
                     </motion.div>
                   ))}
                 </AnimatePresence>
-                
+
                 {notes.length === 0 && (
                   <div className="text-center py-12">
                     <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -437,15 +437,15 @@ const LeadsDetailsPage = () => {
               </div>
             </motion.div>
           </div>
-          
+
           {/* Right Column - Quick Actions and Details */}
           <div className="space-y-8">
             {/* Quick Actions */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 overflow-hidden relative"
-            >              
-              <motion.h2 
+            >
+              <motion.h2
                 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -456,7 +456,7 @@ const LeadsDetailsPage = () => {
                 </div>
                 <span>Quick Actions</span>
               </motion.h2>
-              
+
               <div className="space-y-4">
                 {[
                   { icon: PhoneCall, label: 'Schedule Call', color: 'from-blue-600 to-cyan-600', hoverColor: 'hover:from-blue-600 hover:to-cyan-600' },
@@ -478,14 +478,14 @@ const LeadsDetailsPage = () => {
                 ))}
               </div>
             </motion.div>
-            
+
             {/* Lead Details */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 overflow-hidden relative"
-            >              
-              <motion.h2 
-                className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+            >
+              <motion.h2
+                className="text-lg sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.8 }}
@@ -495,7 +495,7 @@ const LeadsDetailsPage = () => {
                 </div>
                 <span>Lead Information</span>
               </motion.h2>
-              
+
               <div className="space-y-4">
                 {[
                   { label: 'Assigned To', value: lead.assigned, icon: User },

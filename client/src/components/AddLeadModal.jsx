@@ -588,7 +588,7 @@ const AddLeadModal = ({ isOpen, onClose, onSave }) => {
                               Saving...
                             </>
                           ) : (
-                            'Save Lead'
+                            'Save'
                           )}
                         </span>
                       </motion.button>

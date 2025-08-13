@@ -1,4 +1,3 @@
-// SettingsPage.jsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -14,22 +13,64 @@ import {
   X,
   Copy,
   RefreshCw,
+  FileSearch,
+  Check,
+  ChevronDown,
 } from "lucide-react";
 
-const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
-const fadeUp = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+      duration: 0.6
+    }
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  },
+};
+
+const hoverCard = {
+  hover: {
+    y: -5,
+    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+    transition: {
+      type: "spring",
+      stiffness: 200,
+    }
+  }
+};
+
+const hoverButton = {
+  hover: {
+    scale: 1.05,
+    boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+  },
+  tap: {
+    scale: 0.98
+  }
+};
 
 function generateApiKey() {
-  // simple random key — replace with secure generation on server
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   return Array.from({ length: 32 }).map(() => chars[Math.floor(Math.random() * chars.length)]).join("");
 }
 
 export default function SettingsPage() {
-  const [modalType, setModalType] = useState(""); // "", "profile","security","notifications","theme","prefs","api","billing","privacy","logs"
+  const [modalType, setModalType] = useState("");
   const [showModal, setShowModal] = useState(false);
-
-  // Local mock states
   const [profile, setProfile] = useState({ name: "Marlon Welimaluwa", email: "you@company.com" });
   const [notifications, setNotifications] = useState({ email: true, push: false });
   const [theme, setTheme] = useState("system");
@@ -42,7 +83,6 @@ export default function SettingsPage() {
     { id: 3, when: "Jul 21, 2025 — 15:20", what: "API key generated", who: "You", ip: "203.0.113.45" },
   ]);
 
-  // animation helpers
   const openModal = (type) => {
     setModalType(type);
     setShowModal(true);
@@ -52,7 +92,6 @@ export default function SettingsPage() {
     setModalType("");
   };
 
-  // API key helpers
   const handleGenerateKey = () => setApiKey(generateApiKey());
   const handleCopyKey = async () => {
     try {
@@ -63,14 +102,8 @@ export default function SettingsPage() {
     }
   };
 
-  // download mock data
   const handleDownloadData = () => {
-    const data = {
-      profile,
-      prefs,
-      notifications,
-      billing,
-    };
+    const data = { profile, prefs, notifications, billing };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -82,74 +115,103 @@ export default function SettingsPage() {
     URL.revokeObjectURL(url);
   };
 
-  // delete account
   const handleDeleteAccount = () => {
     const ok = window.confirm("Are you sure you want to permanently delete your account? This cannot be undone.");
-    if (ok) {
-      // replace with real API call
-      alert("Account deletion requested (mock). Redirect to goodbye page / logout.");
-      // e.g. logout, clear auth, redirect...
-    }
+    if (ok) alert("Account deletion requested (mock).");
   };
 
-  // small card definitions
   const topCards = [
-    { id: "profile", title: "Profile", icon: <UserCog className="w-6 h-6 text-indigo-600" />, desc: "Edit your personal info" },
-    { id: "security", title: "Security", icon: <Key className="w-6 h-6 text-amber-600" />, desc: "Password & 2FA" },
-    { id: "notifications", title: "Notifications", icon: <Bell className="w-6 h-6 text-emerald-600" />, desc: "Email & push prefs" },
-    { id: "theme", title: "Theme", icon: <Sun className="w-6 h-6 text-yellow-600" />, desc: "Light / dark / system" },
+    { id: "profile", title: "Profile", icon: <UserCog className="w-5 h-5 text-[var(--color-primary)]" />, desc: "Edit your personal info" },
+    { id: "security", title: "Security", icon: <Key className="w-5 h-5 text-amber-500" />, desc: "Password & 2FA" },
+    { id: "notifications", title: "Notifications", icon: <Bell className="w-5 h-5 text-emerald-500" />, desc: "Email & push prefs" },
+    { id: "theme", title: "Theme", icon: <Sun className="w-5 h-5 text-yellow-500" />, desc: "Light / dark / system" },
   ];
 
   const featureCards = [
-    { id: "prefs", title: "Preferences", icon: <Cog className="w-6 h-6 text-slate-700" />, desc: "Language, timezone, currency" },
-    { id: "api", title: "API & Integrations", icon: <Code className="w-6 h-6 text-sky-600" />, desc: "Manage API keys & webhooks" },
-    { id: "billing", title: "Billing", icon: <CreditCard className="w-6 h-6 text-purple-600" />, desc: "Plan & payment history" },
-    { id: "privacy", title: "Privacy", icon: <ShieldOff className="w-6 h-6 text-rose-600" />, desc: "Download or delete data" },
-    { id: "logs", title: "Audit Logs", icon: <List className="w-6 h-6 text-slate-600" />, desc: "Recent activity & security" },
+    { id: "prefs", title: "Preferences", icon: <Cog className="w-5 h-5 text-gray-500" />, desc: "Language, timezone, currency" },
+    { id: "api", title: "API & Integrations", icon: <Code className="w-5 h-5 text-blue-500" />, desc: "Manage API keys & webhooks" },
+    { id: "billing", title: "Billing", icon: <CreditCard className="w-5 h-5 text-purple-500" />, desc: "Plan & payment history" },
+    { id: "privacy", title: "Privacy", icon: <ShieldOff className="w-5 h-5 text-red-500" />, desc: "Download or delete data" },
+    { id: "logs", title: "Audit Logs", icon: <List className="w-5 h-5 text-gray-500" />, desc: "Recent activity & security" },
   ];
 
   return (
-    <div className="p-6 md:p-8">
-      <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+    <div className="md:p-6">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
         {/* Header */}
-        <motion.div variants={fadeUp}>
-          <h1 className="text-3xl font-extrabold text-slate-900">Settings Hub</h1>
-          <p className="text-slate-500 mt-1">Personalize your account, integrations, billing and privacy.</p>
+        <motion.div variants={itemVariants} className="space-y-2 text-center sm:text-left">
+          <h1 className="text-heading-lg font-bold bg-gradient-primary bg-clip-text text-transparent">Settings Hub</h1>
+          <p className="text-muted-dark text-sm sm:text-base">
+            Personalize your account, integrations, billing and privacy
+          </p>
         </motion.div>
 
         {/* Top quick cards */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+        >
           {topCards.map((c) => (
             <motion.button
               key={c.id}
               onClick={() => openModal(c.id)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col items-center gap-2 border border-slate-100"
+              variants={hoverCard}
+              whileHover="hover"
+              whileTap="tap"
+              className="bg-white/80 rounded-xl shadow-md border border-white/20 p-4 flex flex-col items-center gap-3"
             >
-              <div className="p-3 rounded-lg bg-gradient-to-br from-white to-slate-50">{c.icon}</div>
-              <div className="text-sm font-medium text-slate-800">{c.title}</div>
-              <div className="text-xs text-slate-400">{c.desc}</div>
+              <motion.div
+                className={`p-3 rounded-xl ${
+                  c.id === "profile" ? "bg-[var(--color-primary)]/20" :
+                  c.id === "security" ? "bg-amber-100" :
+                  c.id === "notifications" ? "bg-emerald-100" : "bg-yellow-100"
+                }`}
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {c.icon}
+              </motion.div>
+              <div className="text-center">
+                <div className="text-sm font-semibold text-gray-900">{c.title}</div>
+                <div className="text-xs text-muted-dark">{c.desc}</div>
+              </div>
             </motion.button>
           ))}
         </motion.div>
 
         {/* Feature cards row */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+        >
           {featureCards.map((c) => (
             <motion.button
               key={c.id}
               onClick={() => openModal(c.id)}
-              whileHover={{ y: -4 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition flex items-center gap-3 border border-slate-100"
+              variants={hoverCard}
+              whileHover="hover"
+              whileTap="tap"
+              className="bg-white/80 rounded-xl shadow-md border border-white/20 p-4 flex flex-col sm:flex-row items-center gap-3"
             >
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
+              <motion.div
+                className={`p-2 rounded-xl ${
+                  c.id === "api" ? "bg-blue-100" :
+                  c.id === "billing" ? "bg-purple-100" :
+                  c.id === "privacy" ? "bg-red-100" : "bg-gray-100"
+                }`}
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+              >
                 {c.icon}
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-semibold text-slate-800">{c.title}</div>
-                <div className="text-xs text-slate-400">{c.desc}</div>
+              </motion.div>
+              <div className="text-center sm:text-left">
+                <div className="text-sm font-semibold text-gray-900">{c.title}</div>
+                <div className="text-xs text-muted-dark">{c.desc}</div>
               </div>
             </motion.button>
           ))}
@@ -163,287 +225,435 @@ export default function SettingsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 overflow-y-auto"
+            style={{
+              background: 'rgba(27, 56, 144, 0.1)',
+              backdropFilter: 'blur(8px)'
+            }}
           >
-            <motion.div
-              initial={{ scale: 0.98, y: 10 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.98, y: 10 }}
-              className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl p-6 border border-slate-100 relative"
-            >
-              {/* Close X */}
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 transition"
-                aria-label="Close"
+            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 50, scale: 0.9 }}
+                transition={{ 
+                  duration: 0.4,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30
+                }}
+                className="inline-block align-bottom bg-white/95 backdrop-blur-xl rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-white/20"
               >
-                <X className="w-5 h-5 text-slate-600" />
-              </button>
+                <div className="relative p-8">
+                  {/* Close button */}
+                  <motion.button
+                    onClick={closeModal}
+                    className="p-3 rounded-2xl hover:bg-red-50 transition-all duration-100 group cursor-pointer absolute top-4 right-4"
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X className="h-6 w-6 text-gray-600 group-hover:text-red-600 transition-colors duration-100" />
+                  </motion.button>
 
-              {/* MODAL CONTENT SWITCH */}
-              {/* PROFILE */}
-              {modalType === "profile" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Profile</h2>
-                  <p className="text-sm text-slate-500 mb-4">Update your name and contact info.</p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} className="border rounded-lg p-2" />
-                    <input value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} className="border rounded-lg p-2" />
-                  </div>
-
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert("Profile saved (mock)"); closeModal(); }} className="px-4 py-2 bg-emerald-600 text-white rounded-md">Save</button>
-                  </div>
-                </>
-              )}
-
-              {/* SECURITY */}
-              {modalType === "security" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Security</h2>
-                  <p className="text-sm text-slate-500 mb-4">Change your password and enable 2FA.</p>
-
-                  <div className="space-y-3">
-                    <input type="password" placeholder="Current password" className="w-full border rounded-lg p-2" />
-                    <input type="password" placeholder="New password" className="w-full border rounded-lg p-2" />
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm font-medium">Two-Factor Authentication</div>
-                        <div className="text-xs text-slate-400">Add an extra layer of security</div>
-                      </div>
-                      <label className="inline-flex items-center gap-2">
-                        <input type="checkbox" defaultChecked />
-                        <span className="text-sm text-slate-500">Enabled</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert("Security settings saved (mock)"); closeModal(); }} className="px-4 py-2 bg-emerald-600 text-white rounded-md">Save</button>
-                  </div>
-                </>
-              )}
-
-              {/* NOTIFICATIONS */}
-              {modalType === "notifications" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Notifications</h2>
-                  <p className="text-sm text-slate-500 mb-4">Control how we send you updates.</p>
-
-                  <div className="space-y-3">
-                    <label className="flex justify-between items-center">
-                      <div>
-                        <div className="font-medium">Email alerts</div>
-                        <div className="text-xs text-slate-400">Important updates by email</div>
-                      </div>
-                      <input type="checkbox" checked={notifications.email} onChange={() => setNotifications((p) => ({ ...p, email: !p.email }))} />
-                    </label>
-
-                    <label className="flex justify-between items-center">
-                      <div>
-                        <div className="font-medium">Push notifications</div>
-                        <div className="text-xs text-slate-400">Browser & mobile push</div>
-                      </div>
-                      <input type="checkbox" checked={notifications.push} onChange={() => setNotifications((p) => ({ ...p, push: !p.push }))} />
-                    </label>
-                  </div>
-
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert("Notification preferences saved (mock)"); closeModal(); }} className="px-4 py-2 bg-emerald-600 text-white rounded-md">Save</button>
-                  </div>
-                </>
-              )}
-
-              {/* THEME */}
-              {modalType === "theme" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Theme</h2>
-                  <p className="text-sm text-slate-500 mb-4">Choose your preferred appearance.</p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button onClick={() => setTheme("light")} className={`p-3 rounded-lg border ${theme === "light" ? "border-emerald-500" : "border-slate-100"}`}>Light</button>
-                    <button onClick={() => setTheme("dark")} className={`p-3 rounded-lg border ${theme === "dark" ? "border-emerald-500" : "border-slate-100"}`}>Dark</button>
-                    <button onClick={() => setTheme("system")} className={`p-3 rounded-lg border ${theme === "system" ? "border-emerald-500" : "border-slate-100"}`}>System</button>
-                  </div>
-
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert(`Theme set to ${theme} (mock)`); closeModal(); }} className="px-4 py-2 bg-emerald-600 text-white rounded-md">Apply</button>
-                  </div>
-                </>
-              )}
-
-              {/* PREFERENCES */}
-              {modalType === "prefs" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Preferences</h2>
-                  <p className="text-sm text-slate-500 mb-4">Language, timezone and currency.</p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <select value={prefs.language} onChange={(e) => setPrefs((p) => ({ ...p, language: e.target.value }))} className="border rounded-lg p-2">
-                      <option>English</option>
-                      <option>Español</option>
-                      <option>Français</option>
-                    </select>
-                    <select value={prefs.timezone} onChange={(e) => setPrefs((p) => ({ ...p, timezone: e.target.value }))} className="border rounded-lg p-2">
-                      <option>UTC+05:30</option>
-                      <option>UTC+00:00</option>
-                      <option>UTC-07:00</option>
-                    </select>
-                    <select value={prefs.currency} onChange={(e) => setPrefs((p) => ({ ...p, currency: e.target.value }))} className="border rounded-lg p-2">
-                      <option>USD</option>
-                      <option>AED</option>
-                      <option>LKR</option>
-                    </select>
-                  </div>
-
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert("Preferences saved (mock)"); closeModal(); }} className="px-4 py-2 bg-emerald-600 text-white rounded-md">Save</button>
-                  </div>
-                </>
-              )}
-
-              {/* API & INTEGRATIONS */}
-              {modalType === "api" && (
-                <>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold mb-1">API & Integrations</h2>
-                      <p className="text-sm text-slate-500">Manage API keys and webhooks.</p>
+                  {/* Modal Content */}
+                  <div className="space-y-6">
+                    {/* Modal Header */}
+                    <div className="space-y-1">
+                      <h2 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                        {modalType === "profile" && "Profile"}
+                        {modalType === "security" && "Security"}
+                        {modalType === "notifications" && "Notifications"}
+                        {modalType === "theme" && "Theme"}
+                        {modalType === "prefs" && "Preferences"}
+                        {modalType === "api" && "API & Integrations"}
+                        {modalType === "billing" && "Billing"}
+                        {modalType === "privacy" && "Privacy"}
+                        {modalType === "logs" && "Audit Logs"}
+                      </h2>
+                      <p className="text-muted-dark text-sm">
+                        {modalType === "profile" && "Update your name and contact info"}
+                        {modalType === "security" && "Password & 2FA settings"}
+                        {modalType === "notifications" && "Control how we send you updates"}
+                        {modalType === "theme" && "Choose your preferred appearance"}
+                        {modalType === "prefs" && "Language, timezone and currency"}
+                        {modalType === "api" && "Manage API keys and webhooks"}
+                        {modalType === "billing" && "Plan & payment history"}
+                        {modalType === "privacy" && "Download or delete your data"}
+                        {modalType === "logs" && "Recent account activity"}
+                      </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <button onClick={handleGenerateKey} className="px-3 py-2 rounded-md bg-slate-100 text-slate-700 flex items-center gap-2">
-                        <RefreshCw className="w-4 h-4" /> Regenerate
-                      </button>
-                      <button onClick={handleCopyKey} className="px-3 py-2 rounded-md bg-slate-100 text-slate-700 flex items-center gap-2">
-                        <Copy className="w-4 h-4" /> Copy
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <label className="text-xs text-slate-500">Your API key</label>
-                    <div className="mt-2 flex items-center gap-3">
-                      <code className="flex-1 bg-slate-50 p-3 rounded-lg text-xs break-all border border-slate-100">{apiKey}</code>
-                    </div>
-
-                    <div className="mt-4">
-                      <label className="text-xs text-slate-500">Webhooks</label>
-                      <div className="mt-2 space-y-2 text-sm">
-                        <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100">
+                    {/* Profile Modal */}
+                    {modalType === "profile" && (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <div className="font-medium">Order Hook</div>
-                            <div className="text-xs text-slate-400">https://example.com/webhook/orders</div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <input
+                              value={profile.name}
+                              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                            />
                           </div>
                           <div>
-                            <input type="checkbox" defaultChecked />
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                            <input
+                              value={profile.email}
+                              onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                            />
                           </div>
                         </div>
+                      </>
+                    )}
 
-                        <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100">
+                    {/* Security Modal */}
+                    {modalType === "security" && (
+                      <>
+                        <div className="space-y-4">
                           <div>
-                            <div className="font-medium">Leads Hook</div>
-                            <div className="text-xs text-slate-400">https://example.com/webhook/leads</div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                            <input
+                              type="password"
+                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                            />
                           </div>
                           <div>
-                            <input type="checkbox" />
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                            <input
+                              type="password"
+                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                            <div>
+                              <div className="text-sm font-semibold text-gray-700">Two-Factor Authentication</div>
+                              <div className="text-xs text-muted-dark">Add an extra layer of security</div>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" className="sr-only peer" defaultChecked />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
+                            </label>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
+                      </>
+                    )}
 
-              {/* BILLING */}
-              {modalType === "billing" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Billing & Subscription</h2>
-                  <p className="text-sm text-slate-500 mb-4">Manage your plan, billing date and payment method.</p>
+                    {/* Notifications Modal */}
+                    {modalType === "notifications" && (
+                      <>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                            <div>
+                              <div className="text-sm font-semibold text-gray-700">Email Alerts</div>
+                              <div className="text-xs text-muted-dark">Important updates by email</div>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input 
+                                type="checkbox" 
+                                className="sr-only peer" 
+                                checked={notifications.email} 
+                                onChange={() => setNotifications({ ...notifications, email: !notifications.email })} 
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
+                            </label>
+                          </div>
+                          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                            <div>
+                              <div className="text-sm font-semibold text-gray-700">Push Notifications</div>
+                              <div className="text-xs text-muted-dark">Browser & mobile push</div>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input 
+                                type="checkbox" 
+                                className="sr-only peer" 
+                                checked={notifications.push} 
+                                onChange={() => setNotifications({ ...notifications, push: !notifications.push })} 
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
+                            </label>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="p-3 rounded-lg border border-slate-100">
-                      <div className="text-sm text-slate-400">Current plan</div>
-                      <div className="font-medium text-slate-800">{billing.plan}</div>
-                      <div className="text-xs text-slate-400">Next billing: {billing.nextBilling}</div>
-                    </div>
+                    {/* Theme Modal */}
+                    {modalType === "theme" && (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <button 
+                            onClick={() => setTheme("light")} 
+                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 ${
+                              theme === "light" ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10" : "border-gray-200"
+                            }`}
+                          >
+                            <Sun className="w-5 h-5" />
+                            <span className="text-sm font-medium">Light</span>
+                          </button>
+                          <button 
+                            onClick={() => setTheme("dark")} 
+                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 ${
+                              theme === "dark" ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10" : "border-gray-200"
+                            }`}
+                          >
+                            <Sun className="w-5 h-5" />
+                            <span className="text-sm font-medium">Dark</span>
+                          </button>
+                          <button 
+                            onClick={() => setTheme("system")} 
+                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 ${
+                              theme === "system" ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10" : "border-gray-200"
+                            }`}
+                          >
+                            <Cog className="w-5 h-5" />
+                            <span className="text-sm font-medium">System</span>
+                          </button>
+                        </div>
+                      </>
+                    )}
 
-                    <div className="p-3 rounded-lg border border-slate-100">
-                      <div className="text-sm text-slate-400">Payment method</div>
-                      <div className="font-medium text-slate-800">•••• •••• •••• {billing.cardLast4}</div>
-                      <div className="text-xs text-slate-400">Update card via Billing Portal (mock)</div>
-                    </div>
-                  </div>
+                    {/* Preferences Modal */}
+                    {modalType === "prefs" && (
+                      <>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
+                            <div className="relative">
+                              <select
+                                value={prefs.language}
+                                onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}
+                                className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                              >
+                                <option>English</option>
+                                <option>Español</option>
+                                <option>Français</option>
+                              </select>
+                              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <ChevronDown className="h-5 w-5 text-[var(--color-primary)]" />
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Timezone</label>
+                            <div className="relative">
+                              <select
+                                value={prefs.timezone}
+                                onChange={(e) => setPrefs({ ...prefs, timezone: e.target.value })}
+                                className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                              >
+                                <option>UTC+05:30</option>
+                                <option>UTC+00:00</option>
+                                <option>UTC-07:00</option>
+                              </select>
+                              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <ChevronDown className="h-5 w-5 text-[var(--color-primary)]" />
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Currency</label>
+                            <div className="relative">
+                              <select
+                                value={prefs.currency}
+                                onChange={(e) => setPrefs({ ...prefs, currency: e.target.value })}
+                                className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
+                              >
+                                <option>USD</option>
+                                <option>AED</option>
+                                <option>LKR</option>
+                              </select>
+                              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <ChevronDown className="h-5 w-5 text-[var(--color-primary)]" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={closeModal} className="px-4 py-2 bg-slate-100 rounded-md">Cancel</button>
-                    <button onClick={() => { alert("Open billing portal (mock)"); closeModal(); }} className="px-4 py-2 bg-indigo-600 text-white rounded-md">Open Billing</button>
-                  </div>
-                </>
-              )}
+                    {/* API & Integrations Modal */}
+                    {modalType === "api" && (
+                      <>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-sm font-semibold text-gray-700">API Key</div>
+                              <div className="text-xs text-muted-dark">Use this key to authenticate API requests</div>
+                            </div>
+                            <div className="flex gap-2">
+                              <motion.button
+                                onClick={handleGenerateKey}
+                                variants={hoverButton}
+                                whileHover="hover"
+                                whileTap="tap"
+                                className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 flex items-center gap-2 text-sm"
+                              >
+                                <RefreshCw className="w-4 h-4" />
+                                Regenerate
+                              </motion.button>
+                              <motion.button
+                                onClick={handleCopyKey}
+                                variants={hoverButton}
+                                whileHover="hover"
+                                whileTap="tap"
+                                className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 flex items-center gap-2 text-sm"
+                              >
+                                <Copy className="w-4 h-4" />
+                                Copy
+                              </motion.button>
+                            </div>
+                          </div>
+                          <div className="p-3 rounded-xl bg-gray-50">
+                            <code className="text-xs break-all">{apiKey}</code>
+                          </div>
+                          
+                          <div>
+                            <div className="text-sm font-semibold text-gray-700 mb-2">Webhooks</div>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
+                                <div>
+                                  <div className="text-sm font-medium">Order Hook</div>
+                                  <div className="text-xs text-muted-dark">https://example.com/webhook/orders</div>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                  <input type="checkbox" className="sr-only peer" defaultChecked />
+                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
+                                </label>
+                              </div>
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
+                                <div>
+                                  <div className="text-sm font-medium">Leads Hook</div>
+                                  <div className="text-xs text-muted-dark">https://example.com/webhook/leads</div>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                  <input type="checkbox" className="sr-only peer" />
+                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-              {/* PRIVACY */}
-              {modalType === "privacy" && (
-                <>
-                  <h2 className="text-xl font-semibold mb-2">Data & Privacy</h2>
-                  <p className="text-sm text-slate-500 mb-4">Download your data or request deletion.</p>
+                    {/* Billing Modal */}
+                    {modalType === "billing" && (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="p-4 rounded-xl bg-gray-50">
+                            <div className="text-sm text-muted-dark">Current Plan</div>
+                            <div className="text-lg font-semibold text-gray-900 mt-1">{billing.plan}</div>
+                            <div className="text-xs text-muted-dark mt-1">Next billing: {billing.nextBilling}</div>
+                          </div>
+                          <div className="p-4 rounded-xl bg-gray-50">
+                            <div className="text-sm text-muted-dark">Payment Method</div>
+                            <div className="text-lg font-semibold text-gray-900 mt-1">•••• •••• •••• {billing.cardLast4}</div>
+                            <div className="text-xs text-muted-dark mt-1">Update card via Billing Portal</div>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100">
-                      <div>
-                        <div className="font-medium">Download your data</div>
-                        <div className="text-xs text-slate-400">Get a copy of your account data (JSON)</div>
-                      </div>
-                      <button onClick={handleDownloadData} className="px-3 py-2 rounded-md bg-slate-100">Download</button>
-                    </div>
+                    {/* Privacy Modal */}
+                    {modalType === "privacy" && (
+                      <>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                            <div>
+                              <div className="text-sm font-semibold text-gray-700">Download Your Data</div>
+                              <div className="text-xs text-muted-dark">Get a copy of your account data (JSON)</div>
+                            </div>
+                            <motion.button
+                              onClick={handleDownloadData}
+                              variants={hoverButton}
+                              whileHover="hover"
+                              whileTap="tap"
+                              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm"
+                            >
+                              Download
+                            </motion.button>
+                          </div>
+                          <div className="flex items-center justify-between p-4 rounded-xl bg-red-50">
+                            <div>
+                              <div className="text-sm font-semibold text-red-700">Delete Account</div>
+                              <div className="text-xs text-red-600">Permanent removal (GDPR)</div>
+                            </div>
+                            <motion.button
+                              onClick={handleDeleteAccount}
+                              variants={hoverButton}
+                              whileHover="hover"
+                              whileTap="tap"
+                              className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm"
+                            >
+                              Delete
+                            </motion.button>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-rose-50 bg-rose-50/30">
-                      <div>
-                        <div className="font-medium text-rose-700">Delete account</div>
-                        <div className="text-xs text-rose-600">Permanent removal (GDPR)</div>
-                      </div>
-                      <button onClick={handleDeleteAccount} className="px-3 py-2 rounded-md bg-rose-600 text-white">Delete</button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* AUDIT LOGS */}
-              {modalType === "logs" && (
-                <>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold mb-1">Audit Logs</h2>
-                      <p className="text-sm text-slate-500">Recent account activity for security and monitoring.</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => alert("Export logs (mock)")} className="px-3 py-2 rounded-md bg-slate-100">Export</button>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-2 max-h-64 overflow-auto pr-2">
-                    {logs.map((l) => (
-                      <div key={l.id} className="p-3 rounded-lg border border-slate-100 bg-white">
+                    {/* Audit Logs Modal */}
+                    {modalType === "logs" && (
+                      <>
                         <div className="flex items-center justify-between">
                           <div>
-                            <div className="font-medium text-slate-800">{l.what}</div>
-                            <div className="text-xs text-slate-400">{l.when} • {l.who}</div>
+                            <div className="text-sm font-semibold text-gray-700">Recent Activity</div>
+                            <div className="text-xs text-muted-dark">Account actions and security events</div>
                           </div>
-                          <div className="text-xs text-slate-400">{l.ip}</div>
+                          <motion.button
+                            onClick={() => alert("Export logs (mock)")}
+                            variants={hoverButton}
+                            whileHover="hover"
+                            whileTap="tap"
+                            className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm"
+                          >
+                            Export
+                          </motion.button>
                         </div>
-                      </div>
-                    ))}
-                    {logs.length === 0 && <div className="text-sm text-slate-400">No logs available</div>}
+                        <div className="mt-4 space-y-2 max-h-64 overflow-y-auto pr-2">
+                          {logs.map((log) => (
+                            <div key={log.id} className="p-3 rounded-xl bg-gray-50">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{log.what}</div>
+                                  <div className="text-xs text-muted-dark">{log.when} • {log.who}</div>
+                                </div>
+                                <div className="text-xs text-muted-dark">{log.ip}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    {/* Modal Footer */}
+                    <div className="flex justify-end gap-3 pt-6">
+                      <motion.button
+                        onClick={closeModal}
+                        variants={hoverButton}
+                        whileHover="hover"
+                        whileTap="tap"
+                        className="px-6 py-3 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer"
+                      >
+                        Cancel
+                      </motion.button>
+                      <motion.button
+                        onClick={() => {
+                          alert(`${modalType} settings saved (mock)`);
+                          closeModal();
+                        }}
+                        variants={hoverButton}
+                        whileHover="hover"
+                        whileTap="tap"
+                        className="px-6 py-3 bg-gradient-primary text-white rounded-xl font-semibold shadow-lg cursor-pointer"
+                      >
+                        Save Changes
+                      </motion.button>
+                    </div>
                   </div>
-                </>
-              )}
-            </motion.div>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

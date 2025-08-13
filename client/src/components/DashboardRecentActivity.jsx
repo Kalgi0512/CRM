@@ -3,8 +3,8 @@ import { hoverCard } from "../dashboardAnimationVariants";
 import { Users, FileText, CheckCircle, Phone } from "lucide-react";
 
 const DashboardRecentActivity = ({ activities = defaultActivities }) => (
-  <div className="bg-white/80 rounded-xl shadow-xl border border-white/20 p-6">
-    <div className="flex justify-between items-center mb-4">
+  <div className="bg-white/80 rounded-xl shadow-xl border border-white/20 p-4 sm:p-6">
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
       <h2 className="text-description-lg font-semibold text-gray-900">Recent Activities</h2>
       <button className="text-sm text-[var(--color-secondary)] hover:text-[var(--color-primary)] cursor-pointer font-medium">
         View All
@@ -16,14 +16,14 @@ const DashboardRecentActivity = ({ activities = defaultActivities }) => (
           key={activity.id}
           variants={hoverCard}
           whileHover="hover"
-          className="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+          className="flex items-start flex-col sm:flex-row gap-2 sm:gap-3 p-2 sm:p-3 hover:bg-gray-50 rounded-lg transition-colors"
         >
           <div className="p-2 rounded-lg bg-gray-100 mt-1">
             {activity.icon}
           </div>
-          <div className="flex-1">
-            <h4 className="font-medium text-gray-900">{activity.title}</h4>
-            <p className="text-sm text-gray-600">{activity.description}</p>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm sm:text-base font-medium text-gray-900 break-words">{activity.title}</h4>
+            <p className="text-xs sm:text-sm text-gray-600 break-words">{activity.description}</p>
           </div>
           <div className="text-xs text-muted-dark whitespace-nowrap">{activity.time}</div>
         </motion.div>

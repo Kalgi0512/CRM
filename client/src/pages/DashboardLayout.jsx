@@ -30,7 +30,7 @@ const navItems = [
     label: "Admin",
     icon: Shield,
     children: [
-      { to: "admin/users", label: "Users", icon: UserCog },
+      { to: "admin", label: "Users", icon: UserCog },
       { to: "admin/settings", label: "Settings", icon: Settings }
     ]
   }

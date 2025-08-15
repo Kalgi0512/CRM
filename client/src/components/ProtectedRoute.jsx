@@ -3,9 +3,7 @@ import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
-  const authUser = JSON.parse(localStorage.getItem("authUser"));  // changed key here
-  console.log('Received token:', token);
-
+  const authUser = JSON.parse(localStorage.getItem("authUser"));  // changed 
 
   if (!token) {
     return <Navigate to="/" replace />;

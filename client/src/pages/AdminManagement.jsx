@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Edit2, Trash2 } from "react-feather";
+import { Edit2, Trash2 } from "lucide-react";
 
 const AdminManagement = () => {
   const [admins, setAdmins] = useState([]);
@@ -184,6 +184,7 @@ const AdminManagement = () => {
               <th className="border px-3 py-2">Name</th>
               <th className="border px-3 py-2">Email</th>
               <th className="border px-3 py-2">Role</th>
+               <th className="border px-3 py-2">Created At</th>
               <th className="border px-3 py-2">Actions</th>
             </tr>
           </thead>
@@ -206,6 +207,9 @@ const AdminManagement = () => {
                 <td className="border px-3 py-2">{admin.name}</td>
                 <td className="border px-3 py-2">{admin.email}</td>
                 <td className="border px-3 py-2">{admin.role}</td>
+                <td className="border px-3 py-2">
+      {new Date(admin.createdAt).toLocaleString()} {/* Format timestamp */}
+    </td>
                 <td className="border px-3 py-2">
                   <div className="flex items-center space-x-2">
                     {[

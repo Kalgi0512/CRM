@@ -30,7 +30,7 @@ const navItems = [
     label: "Admin",
     icon: Shield,
     children: [
-      { to: "admin", label: "Users", icon: UserCog },
+      { to: "admin/users", label: "Users", icon: UserCog },
       { to: "admin/settings", label: "Settings", icon: Settings }
     ]
   }
@@ -139,7 +139,7 @@ const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const location = useLocation();
-  const currentPath = location.pathname === "/dashboard" ? "." : location.pathname.replace(/^\/dashboard\//, '');
+  const currentPath = location.pathname === "/admin-dashboard" ? "." : location.pathname.replace(/^\/admin-dashboard\//, '');
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);

@@ -1,14 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Phone, Lock, Eye, ChevronDown, Check } from 'lucide-react';
+import { X, User, Mail, Lock, Eye, ChevronDown, Check, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
 const AddUserModal = ({ isOpen, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
-    role: 'Agent',
-    status: 'Active',
+    role: 'Agent', 
     password: '',
     confirmPassword: ''
   });
@@ -17,6 +15,7 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +23,7 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
       ...prev,
       [name]: value
     }));
+    
     // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
@@ -31,6 +31,7 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
         [name]: ''
       }));
     }
+    if (apiError) setApiError('');
   };
 
   const validateForm = () => {
@@ -39,7 +40,6 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) 
       newErrors.email = 'Invalid email format';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
     if (!formData.password) newErrors.password = 'Password is required';
     else if (formData.password.length < 8) 
       newErrors.password = 'Password must be at least 8 characters';
@@ -50,27 +50,42 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      const newUser = {
-        ...formData,
-        id: Math.floor(Math.random() * 10000),
-        lastLogin: new Date().toISOString(),
-        createdAt: new Date().toISOString().split('T')[0]
+    setApiError('');
+
+    try {
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        password: formData.password
       };
-      onSave(newUser);
-      setIsSubmitting(false);
+
+      await onSave(userData);
+      
+      // Reset form on success
+      setFormData({
+        name: '',
+        email: '',
+        role: 'Agent',
+        password: '',
+        confirmPassword: ''
+      });
+      
       onClose();
-    }, 1000);
+    } catch (error) {
+      console.error('Error saving user:', error);
+      setApiError(error.message || 'Failed to create user. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const roleOptions = ['Admin', 'Sales', 'Agent'];
-  const statusOptions = ['Active', 'Inactive'];
+  const roleOptions = ['Sales', 'Agent'];
 
   const fieldVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -176,332 +191,213 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
                   </motion.div>
 
                   {/* Form */}
-                  <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Personal Information Section */}
-                      <motion.div 
-                        className="space-y-4"
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 }}
-                      >
-                        <div className="relative">
-                          <div className="relative">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Full Name *
-                            </label>
-                            <motion.div 
-                              className="relative"
-                              variants={inputHoverVariants}
-                              initial="rest"
-                              whileHover="hover"
-                              animate={focusedField === 'name' ? 'focus' : 'rest'}
-                            >
-                              <motion.div 
-                                className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"                         
-                              >
-                                <User className="h-5 w-5 text-[var(--color-secondary)] z-1" />
-                              </motion.div>
-                              <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                onFocus={() => setFocusedField('name')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
-                                  errors.name 
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                                    : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
-                                } focus:ring-4 focus:outline-none placeholder-gray-400`}
-                                placeholder="John Smith"
-                              />
-                            </motion.div>
-                            <AnimatePresence>
-                              {errors.name && (
-                                <motion.p 
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="mt-2 text-sm text-red-600 font-medium"
-                                >
-                                  {errors.name}
-                                </motion.p>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
+<form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Personal Information Section */}
+              <motion.div className="space-y-4">
+                {/* Name Field */}
+                <div className="relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <motion.div 
+                    className="relative"
+                    variants={inputHoverVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    animate={focusedField === 'name' ? 'focus' : 'rest'}
+                  >
+                    <motion.div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <User className="h-5 w-5 z-1 text-[var(--color-secondary)]" />
+                    </motion.div>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField('name')}
+                      onBlur={() => setFocusedField(null)}
+                      className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
+                        errors.name 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                          : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
+                      } focus:ring-4 focus:outline-none placeholder-gray-400`}
+                      placeholder="John Smith"
+                    />
+                  </motion.div>
+                  {errors.name && (
+                    <motion.p className="mt-2 text-sm text-red-600 font-medium">
+                      {errors.name}
+                    </motion.p>
+                  )}
+                </div>
 
-                        <div className="relative">
-                          <div className="relative">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Email *
-                            </label>
-                            <motion.div 
-                              className="relative"
-                              variants={inputHoverVariants}
-                              initial="rest"
-                              whileHover="hover"
-                              animate={focusedField === 'email' ? 'focus' : 'rest'}
-                            >
-                              <motion.div 
-                                className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
-                              >
-                                <Mail className="h-5 w-5 text-[var(--color-secondary)] z-1" />
-                              </motion.div>
-                              <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                onFocus={() => setFocusedField('email')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
-                                  errors.email 
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                                    : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
-                                } focus:ring-4 focus:outline-none placeholder-gray-400`}
-                                placeholder="john@migrationco.com"
-                              />
-                            </motion.div>
-                            <AnimatePresence>
-                              {errors.email && (
-                                <motion.p 
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="mt-2 text-sm text-red-600 font-medium"
-                                >
-                                  {errors.email}
-                                </motion.p>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
+                {/* Email Field */}
+                <div className="relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email *
+                  </label>
+                  <motion.div 
+                    className="relative"
+                    variants={inputHoverVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    animate={focusedField === 'email' ? 'focus' : 'rest'}
+                  >
+                    <motion.div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 z-1 text-[var(--color-secondary)]" />
+                    </motion.div>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                      className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
+                        errors.email 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                          : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
+                      } focus:ring-4 focus:outline-none placeholder-gray-400`}
+                      placeholder="john@company.com"
+                    />
+                  </motion.div>
+                  {errors.email && (
+                    <motion.p className="mt-2 text-sm text-red-600 font-medium">
+                      {errors.email}
+                    </motion.p>
+                  )}
+                </div>
+              </motion.div>
 
-                        <div className="relative">
-                          <div className="relative">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Phone *
-                            </label>
-                            <motion.div 
-                              className="relative"
-                              variants={inputHoverVariants}
-                              initial="rest"
-                              whileHover="hover"
-                              animate={focusedField === 'phone' ? 'focus' : 'rest'}
-                            >
-                              <motion.div 
-                                className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
-                              >
-                                <Phone className="h-5 w-5 text-[var(--color-secondary)] z-1" />
-                              </motion.div>
-                              <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                onFocus={() => setFocusedField('phone')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
-                                  errors.phone 
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                                    : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
-                                } focus:ring-4 focus:outline-none placeholder-gray-400`}
-                                placeholder="+1 (555) 123-4567"
-                              />
-                            </motion.div>
-                            <AnimatePresence>
-                              {errors.phone && (
-                                <motion.p 
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="mt-2 text-sm text-red-600 font-medium"
-                                >
-                                  {errors.phone}
-                                </motion.p>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      {/* Account Information Section */}
-                      <motion.div 
-                        className="space-y-4"
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.6 }}
-                      >
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Role *
-                          </label>
-                          <motion.div 
-                            className="relative"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <select
-                              name="role"
-                              value={formData.role}
-                              onChange={handleChange}
-                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-secondary)] focus:ring-4 focus:ring-[var(--color-secondary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
-                            >
-                              {roleOptions.map(option => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                            <motion.div 
-                              className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
-                              animate={{ rotate: focusedField === 'role' ? 180 : 0 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <ChevronDown className="h-5 w-5 text-[var(--color-secondary)]" />
-                            </motion.div>
-                          </motion.div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Status *
-                          </label>
-                          <motion.div 
-                            className="relative"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <select
-                              name="status"
-                              value={formData.status}
-                              onChange={handleChange}
-                              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-secondary)] focus:ring-4 focus:ring-[var(--color-secondary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
-                            >
-                              {statusOptions.map(option => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                              <Check className="h-5 w-5 text-[var(--color-secondary)]" />
-                            </div>
-                          </motion.div>
-                        </div>
-
-                        <div className="relative">
-                          <div className="relative">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Password *
-                            </label>
-                            <motion.div 
-                              className="relative"
-                              variants={inputHoverVariants}
-                              initial="rest"
-                              whileHover="hover"
-                              animate={focusedField === 'password' ? 'focus' : 'rest'}
-                            >
-                              <motion.div 
-                                className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
-                              >
-                                <Lock className="h-5 w-5 text-[var(--color-secondary)] z-1" />
-                              </motion.div>
-                              <input
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                onFocus={() => setFocusedField('password')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
-                                  errors.password 
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                                    : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
-                                } focus:ring-4 focus:outline-none placeholder-gray-400`}
-                                placeholder="••••••••"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[var(--color-primary)]"
-                              >
-                                {showPassword ? (
-                                  <EyeOff className="h-5 w-5" />
-                                ) : (
-                                  <Eye className="h-5 w-5" />
-                                )}
-                              </button>
-                            </motion.div>
-                            <AnimatePresence>
-                              {errors.password && (
-                                <motion.p 
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="mt-2 text-sm text-red-600 font-medium"
-                                >
-                                  {errors.password}
-                                </motion.p>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-
-                        <div className="relative">
-                          <div className="relative">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Confirm Password *
-                            </label>
-                            <motion.div 
-                              className="relative"
-                              variants={inputHoverVariants}
-                              initial="rest"
-                              whileHover="hover"
-                              animate={focusedField === 'confirmPassword' ? 'focus' : 'rest'}
-                            >
-                              <motion.div 
-                                className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
-                              >
-                                <Lock className="h-5 w-5 text-[var(--color-secondary)] z-1" />
-                              </motion.div>
-                              <input
-                                type={showPassword ? "text" : "password"}
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                onFocus={() => setFocusedField('confirmPassword')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
-                                  errors.confirmPassword 
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                                    : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
-                                } focus:ring-4 focus:outline-none placeholder-gray-400`}
-                                placeholder="••••••••"
-                              />
-                            </motion.div>
-                            <AnimatePresence>
-                              {errors.confirmPassword && (
-                                <motion.p 
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="mt-2 text-sm text-red-600 font-medium"
-                                >
-                                  {errors.confirmPassword}
-                                </motion.p>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </div>
-
-                    {/* Form actions */}
-                    <motion.div 
-                      className="mt-8 flex justify-end gap-4"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 }}
+              {/* Account Information Section */}
+              <motion.div className="space-y-4">
+                {/* Role Field */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Role *
+                  </label>
+                  <motion.div 
+                    className="relative"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <select
+                      name="role"
+                      value={formData.role}
+                      onChange={handleChange}
+                      className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 focus:border-[var(--color-secondary)] focus:ring-4 focus:ring-[var(--color-secondary)]/20 focus:outline-none appearance-none bg-white/80 backdrop-blur-sm transition-all duration-300"
                     >
+                      {roleOptions.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                    <motion.div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <ChevronDown className="h-5 w-5 text-[var(--color-secondary)]" />
+                    </motion.div>
+                  </motion.div>
+                </div>
+
+                {/* Password Field */}
+                <div className="relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password *
+                  </label>
+                  <motion.div 
+                    className="relative"
+                    variants={inputHoverVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    animate={focusedField === 'password' ? 'focus' : 'rest'}
+                  >
+                    <motion.div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 z-1 text-[var(--color-secondary)]" />
+                    </motion.div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField('password')}
+                      onBlur={() => setFocusedField(null)}
+                      className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
+                        errors.password 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                          : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
+                      } focus:ring-4 focus:outline-none placeholder-gray-400`}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[var(--color-primary)]"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </motion.div>
+                  {errors.password && (
+                    <motion.p className="mt-2 text-sm text-red-600 font-medium">
+                      {errors.password}
+                    </motion.p>
+                  )}
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Confirm Password *
+                  </label>
+                  <motion.div 
+                    className="relative"
+                    variants={inputHoverVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    animate={focusedField === 'confirmPassword' ? 'focus' : 'rest'}
+                  >
+                    <motion.div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 z-1 text-[var(--color-secondary)]" />
+                    </motion.div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField('confirmPassword')}
+                      onBlur={() => setFocusedField(null)}
+                      className={`pl-12 w-full py-3 rounded-xl border-2 transition-all duration-300 bg-white/80 backdrop-blur-sm ${
+                        errors.confirmPassword 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                          : 'border-gray-200 focus:border-[var(--color-secondary)] focus:ring-[var(--color-secondary)]/20'
+                      } focus:ring-4 focus:outline-none placeholder-gray-400`}
+                      placeholder="••••••••"
+                    />
+                  </motion.div>
+                  {errors.confirmPassword && (
+                    <motion.p className="mt-2 text-sm text-red-600 font-medium">
+                      {errors.confirmPassword}
+                    </motion.p>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* API Error Message */}
+            {apiError && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium"
+              >
+                {apiError}
+              </motion.div>
+            )}
+
+            {/* Form actions  */}
+            <motion.div className="mt-8 flex justify-end gap-4">
                       <motion.button
                         type="button"
                         onClick={onClose}
